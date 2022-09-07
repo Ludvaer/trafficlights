@@ -5,5 +5,37 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TrafficLights.MainWindow"
         Title="TrafficLights">
-    Welcome to Avalonia!
+
+	<Window.Styles>
+		<StyleInclude Source="/Styles/Styles.axaml" />
+	</Window.Styles>
+
+	<!-- Главная таблица -->
+	<Grid ColumnDefinitions="*" RowDefinitions="Auto, *">
+
+		<!-- Верхняя ячейка -->
+		<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0">
+
+			<!-- Таблица в верхней части экрана -->
+			<StackPanel>
+				<Grid ColumnDefinitions="Auto, Auto" RowDefinitions="*">
+					<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0" Background="Blue">
+						<TextBlock Text="Yiff" />
+					</Border>
+
+					<Border Classes="VisibleBorders" Grid.Column="1" Grid.Row="0" Background="Red">
+						<TextBlock Text="Yerf" />
+					</Border>
+				</Grid>
+			</StackPanel>
+		</Border>
+
+		<!-- Нижняя ячейка -->
+		<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="1">
+			<StackPanel>
+				<TextBlock Text="Yuff" />
+			</StackPanel>
+		</Border>
+	</Grid>
+	
 </Window>

@@ -8,7 +8,13 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
   </PropertyGroup>
   <ItemGroup>
+    <AvaloniaXaml Remove="Styles\Styles.axaml" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Styles\Styles.axaml" />
   </ItemGroup>
   <ItemGroup>
     <!--This helps with theme dll-s trimming.
