@@ -11,6 +11,7 @@ namespace TrafficLights.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        #region Properties
         /// <summary>
         /// Нажатие на красную кнопку
         /// </summary>
@@ -55,14 +56,46 @@ namespace TrafficLights.ViewModels
             get => _yellowColor;
             set => this.RaiseAndSetIfChanged(ref _yellowColor, value);
         }
+
+
         /// <summary>
-        /// ПЦвет зелёной лампы светофора
+        /// Цвет зелёной лампы светофора
         /// </summary>
         public IBrush GreenLightColor
         {
             get => _greenColor;
             set => this.RaiseAndSetIfChanged(ref _greenColor, value);
         }
+
+        /// <summary>
+        /// Текст в консоли
+        /// </summary>
+        private string _consoleText;
+
+        /// <summary>
+        /// Код для доступа к тексту в консоли
+        /// </summary>
+        public string ConsoleText
+        {
+            get => _consoleText;
+            set => this.RaiseAndSetIfChanged(ref _consoleText, value);
+        }
+
+
+        #endregion
+
+
+        /// <summary>
+        /// Возможные цвета светофора.
+        /// </summary>
+        enum TrafficLightColor
+        {
+            Black, //turned off
+            Red,
+            Yellow,
+            Green,
+        }
+
 
         /// <summary>
         /// Установка выбранного цвета. Выключение ненужных, включение нужнго света.
@@ -74,7 +107,7 @@ namespace TrafficLights.ViewModels
             _currentLight = color;
             RedLightColor = color == TrafficLightColor.Red ? Brushes.Red : Brushes.Black;
             YellowLightColor = color == TrafficLightColor.Yellow ? Brushes.Yellow : Brushes.Black;
-            GreenLightColor = color == TrafficLightColor.Green ? Brushes.Green : Brushes.Black;
+            GreenLightColor = color == TrafficLightColor.Green ? Brushes.MediumSeaGreen : Brushes.Black;  //[Medium]Turquoise may be fine too
 
         }
 
@@ -91,31 +124,9 @@ namespace TrafficLights.ViewModels
                 SetColor(color);
         }
 
-        /// <summary>
-        /// Возможные цвета светофора.
-        /// </summary>
-        enum TrafficLightColor
-        {
-            Black, //turned off
-            Red,
-            Yellow,
-            Green,          
-        }
-
         private TrafficLightColor _currentLight;
-        /// <summary>
-        /// Текст в консоли
-        /// </summary>
-        private string _consoleText;
 
-        /// <summary>
-        /// Код для доступа к тексту в консоли
-        /// </summary>
-        public string ConsoleText
-        {
-            get => _consoleText;
-            set => this.RaiseAndSetIfChanged(ref _consoleText, value);
-        }
+
 
         public MainWindowViewModel()
         {
