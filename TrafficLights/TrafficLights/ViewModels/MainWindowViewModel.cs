@@ -12,6 +12,11 @@ namespace TrafficLights.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         /// <summary>
+        /// Цвет при выключенном сигнале
+        /// </summary>
+        private readonly IBrush OffColor = Brushes.Black;
+
+        /// <summary>
         /// Нажатие на красную кнопку
         /// </summary>
         public ReactiveCommand<Unit, Unit> PressRedCommand { get; }
@@ -27,17 +32,45 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressGreenCommand { get; }
 
         /// <summary>
-        /// Последняя нажатая кнопка
+        /// Цвет красного огня
         /// </summary>
-        private IBrush _lastColor;
+        private IBrush _redColor;
 
         /// <summary>
-        /// Код для доступа к последней нажатой кнопке
+        /// Код для доступа к красному огню светофора
         /// </summary>
-        public IBrush LastColor
+        public IBrush RedColor
         {
-            get => _lastColor;
-            set => this.RaiseAndSetIfChanged(ref _lastColor, value);
+            get => _redColor;
+            set => this.RaiseAndSetIfChanged(ref _redColor, value);
+        }
+
+        /// <summary>
+        /// Цвет жёлтого огня
+        /// </summary>
+        private IBrush _yellowColor;
+
+        /// <summary>
+        /// Код для доступа к жёлтому огню светофора
+        /// </summary>
+        public IBrush YellowColor
+        {
+            get => _yellowColor;
+            set => this.RaiseAndSetIfChanged(ref _yellowColor, value);
+        }
+
+        /// <summary>
+        /// Цвет зелёного огня
+        /// </summary>
+        private IBrush _greenColor;
+
+        /// <summary>
+        /// Код для доступа к зелёному огню светофора
+        /// </summary>
+        public IBrush GreenColor
+        {
+            get => _greenColor;
+            set => this.RaiseAndSetIfChanged(ref _greenColor, value);
         }
 
         /// <summary>
@@ -54,11 +87,18 @@ namespace TrafficLights.ViewModels
             set => this.RaiseAndSetIfChanged(ref _consoleText, value);
         }
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public MainWindowViewModel()
         {
             PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
             PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
+
+            RedColor = OffColor;
+            YellowColor = OffColor;
+            GreenColor = OffColor;
         }
 
         /// <summary>
@@ -66,7 +106,10 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            LastColor = Brushes.Red;
+            RedColor = Brushes.Red;
+            YellowColor = OffColor;
+            GreenColor = OffColor;
+
             AddLineToConsole("Нажата красная кнопка");
         }
 
@@ -75,7 +118,10 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            LastColor = Brushes.Yellow;
+            RedColor = OffColor;
+            YellowColor = Brushes.Yellow;
+            GreenColor = OffColor;
+
             AddLineToConsole("Нажата жёлтая кнопка");
         }
 
@@ -84,7 +130,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            LastColor = Brushes.Green;
+            RedColor = OffColor;
+            YellowColor = OffColor;
+            GreenColor = Brushes.Green;
             AddLineToConsole("Нажата зелёная кнопка");
         }
 
