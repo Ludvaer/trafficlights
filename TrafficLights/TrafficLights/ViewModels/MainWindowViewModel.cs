@@ -69,11 +69,26 @@ namespace TrafficLights.ViewModels
         /// </summary>
         /// <param name="color"></param>
         private void  SetColor(TrafficLightColor color)
-        { 
+        {
+            
+            _currentLight = color;
             RedLightColor = color == TrafficLightColor.Red ? Brushes.Red : Brushes.Black;
             YellowLightColor = color == TrafficLightColor.Yellow ? Brushes.Yellow : Brushes.Black;
             GreenLightColor = color == TrafficLightColor.Green ? Brushes.Green : Brushes.Black;
 
+        }
+
+
+        /// <summary>
+        /// Устанавливает цве, но отключает его если передать текущий.
+        /// </summary>
+        /// <param name="color"></param>
+        private void SwitchColor(TrafficLightColor color)
+        {
+            if (_currentLight == color)
+                SetColor(TrafficLightColor.Black);
+            else
+                SetColor(color);
         }
 
         /// <summary>
@@ -86,6 +101,8 @@ namespace TrafficLights.ViewModels
             Yellow,
             Green,          
         }
+
+        private TrafficLightColor _currentLight;
         /// <summary>
         /// Текст в консоли
         /// </summary>
@@ -113,7 +130,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            SetColor(TrafficLightColor.Red);
+            SwitchColor(TrafficLightColor.Red);
             AddLineToConsole("Нажата красная кнопка");
         }
 
@@ -122,7 +139,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            SetColor(TrafficLightColor.Yellow);
+            SwitchColor(TrafficLightColor.Yellow);
             AddLineToConsole("Нажата жёлтая кнопка");
         }
 
@@ -131,7 +148,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            SetColor(TrafficLightColor.Green);
+            SwitchColor(TrafficLightColor.Green);
             AddLineToConsole("Нажата зелёная кнопка");
         }
 
