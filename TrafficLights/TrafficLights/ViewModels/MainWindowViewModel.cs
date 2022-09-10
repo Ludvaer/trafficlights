@@ -27,19 +27,52 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressGreenCommand { get; }
 
         /// <summary>
-        /// Последняя нажатая кнопка
+        /// Цвет красной лампы
         /// </summary>
-        private IBrush _lastColor;
+        private IBrush _redColor;
+        /// <summary>
+        /// Цвет жёлтой лампы
+        /// </summary>
+        private IBrush _yellowColor;
+        /// <summary>
+        /// Цвет зелёной лампы
+        /// </summary>
+        private IBrush _greenColor;
 
         /// <summary>
         /// Код для доступа к последней нажатой кнопке
         /// </summary>
-        public IBrush LastColor
+        public IBrush RedLightColor
         {
-            get => _lastColor;
-            set => this.RaiseAndSetIfChanged(ref _lastColor, value);
+            get => _redColor;
+            set => this.RaiseAndSetIfChanged(ref _redColor, value);
+        }
+        public IBrush YellowLightColor
+        {
+            get => _yellowColor;
+            set => this.RaiseAndSetIfChanged(ref _yellowColor, value);
+        }
+        public IBrush GreenLightColor
+        {
+            get => _greenColor;
+            set => this.RaiseAndSetIfChanged(ref _greenColor, value);
         }
 
+        private void  SetColor(TrafficLightColor color)
+        { 
+
+                RedLightColor = color == TrafficLightColor.Red ? Brushes.Red : Brushes.Black;
+            YellowLightColor = color == TrafficLightColor.Yellow ? Brushes.Yellow : Brushes.Black;
+            GreenLightColor = color == TrafficLightColor.Green ? Brushes.Green : Brushes.Black;
+
+        }
+
+        enum TrafficLightColor
+        {
+            Red,
+            Yellow,
+            Green,          
+        }
         /// <summary>
         /// Текст в консоли
         /// </summary>
@@ -66,7 +99,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            LastColor = Brushes.Red;
+            SetColor(TrafficLightColor.Red);
             AddLineToConsole("Нажата красная кнопка");
         }
 
@@ -75,7 +108,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            LastColor = Brushes.Yellow;
+            SetColor(TrafficLightColor.Yellow);
             AddLineToConsole("Нажата жёлтая кнопка");
         }
 
@@ -84,7 +117,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            LastColor = Brushes.Green;
+            SetColor(TrafficLightColor.Green);
             AddLineToConsole("Нажата зелёная кнопка");
         }
 

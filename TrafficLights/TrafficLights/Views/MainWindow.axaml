@@ -20,10 +20,11 @@
 			<StackPanel>
 				<Grid ColumnDefinitions="*, *" RowDefinitions="*">
 					<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0">
-						
-						<Border Classes="Light" Width="100" Height="100" Background="{ Binding LastColor }">
-							
-						</Border>
+						<StackPanel Orientation="Horizontal">
+							<Border Classes="Light" Width="100" Height="100" Background="{ Binding RedLightColor }"/>
+							<Border Classes="Light" Width="100" Height="100" Background="{ Binding YellowLightColor }"/>	
+							<Border Classes="Light" Width="100" Height="100" Background="{ Binding GreenLightColor }"/>
+						</StackPanel>
 					</Border>
 
 					<Border Classes="VisibleBorders" Grid.Column="1" Grid.Row="0">
