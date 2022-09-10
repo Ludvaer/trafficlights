@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Media;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,15 +29,15 @@ namespace TrafficLights.ViewModels
         /// <summary>
         /// Последняя нажатая кнопка
         /// </summary>
-        private string _lastButton;
+        private IBrush _lastColor;
 
         /// <summary>
         /// Код для доступа к последней нажатой кнопке
         /// </summary>
-        public string LastButton
+        public IBrush LastColor
         {
-            get => _lastButton;
-            set => this.RaiseAndSetIfChanged(ref _lastButton, value);
+            get => _lastColor;
+            set => this.RaiseAndSetIfChanged(ref _lastColor, value);
         }
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            LastButton = "Красная";
+            LastColor = Brushes.Red;
             AddLineToConsole("Нажата красная кнопка");
         }
 
@@ -74,7 +75,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            LastButton = "Жёлтая";
+            LastColor = Brushes.Yellow;
             AddLineToConsole("Нажата жёлтая кнопка");
         }
 
@@ -83,7 +84,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            LastButton = "Зелёная";
+            LastColor = Brushes.Green;
             AddLineToConsole("Нажата зелёная кнопка");
         }
 
