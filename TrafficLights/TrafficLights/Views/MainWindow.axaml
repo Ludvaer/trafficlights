@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="TrafficLights.MainWindow"
+        x:Class="TrafficLights.Views.MainWindow"
         Title="TrafficLights">
 
 	<Window.Styles>
@@ -25,9 +25,9 @@
 
 					<Border Classes="VisibleBorders" Grid.Column="1" Grid.Row="0">
 						<StackPanel>
-							<Button Content="Красный" Width="200" />
-							<Button Content="Жёлтый" Width="200" />
-							<Button Content="Зеленый" Width="200" />
+							<Button Content="Красный" Width="200" Command="{ Binding PressRedCommand }"/>
+							<Button Content="Жёлтый" Width="200" Command="{ Binding PressYellowCommand }"/>
+							<Button Content="Зеленый" Width="200" Command="{ Binding PressGreenCommand }"/>
 						</StackPanel>
 					</Border>
 				</Grid>
@@ -39,7 +39,7 @@
 			<DockPanel>
 				<TextBlock Text="Console:" DockPanel.Dock="Top" />
 			
-				<TextBox IsReadOnly="True" AcceptsReturn="True" Text="Here will be console"/>
+				<TextBox IsReadOnly="True" AcceptsReturn="True" Text="{Binding ConsoleText}"/>
 			</DockPanel>
 		</Border>
 	</Grid>
