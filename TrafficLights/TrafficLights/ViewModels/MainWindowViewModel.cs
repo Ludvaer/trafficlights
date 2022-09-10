@@ -40,33 +40,45 @@ namespace TrafficLights.ViewModels
         private IBrush _greenColor;
 
         /// <summary>
-        /// Код для доступа к последней нажатой кнопке
+        /// ПЦвет красной лампы светофора
         /// </summary>
         public IBrush RedLightColor
         {
             get => _redColor;
             set => this.RaiseAndSetIfChanged(ref _redColor, value);
         }
+        /// <summary>
+        /// ПЦвет жёлтой лампы светофора
+        /// </summary>
         public IBrush YellowLightColor
         {
             get => _yellowColor;
             set => this.RaiseAndSetIfChanged(ref _yellowColor, value);
         }
+        /// <summary>
+        /// ПЦвет зелёной лампы светофора
+        /// </summary>
         public IBrush GreenLightColor
         {
             get => _greenColor;
             set => this.RaiseAndSetIfChanged(ref _greenColor, value);
         }
 
+        /// <summary>
+        /// Установка выбранного цвета. Выключение ненужных, включение нужнго света.
+        /// </summary>
+        /// <param name="color"></param>
         private void  SetColor(TrafficLightColor color)
         { 
-
-                RedLightColor = color == TrafficLightColor.Red ? Brushes.Red : Brushes.Black;
+            RedLightColor = color == TrafficLightColor.Red ? Brushes.Red : Brushes.Black;
             YellowLightColor = color == TrafficLightColor.Yellow ? Brushes.Yellow : Brushes.Black;
             GreenLightColor = color == TrafficLightColor.Green ? Brushes.Green : Brushes.Black;
 
         }
 
+        /// <summary>
+        /// Возможные цвета светофора.
+        /// </summary>
         enum TrafficLightColor
         {
             Red,
