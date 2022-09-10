@@ -81,6 +81,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         enum TrafficLightColor
         {
+            Black, //turned off
             Red,
             Yellow,
             Green,          
@@ -104,6 +105,7 @@ namespace TrafficLights.ViewModels
             PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
             PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
+            SetColor(TrafficLightColor.Black);
         }
 
         /// <summary>
