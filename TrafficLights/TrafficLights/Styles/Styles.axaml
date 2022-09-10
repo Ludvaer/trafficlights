@@ -13,4 +13,12 @@
 		<Setter Property="Padding" Value="5" />
 		<Setter Property="Margin" Value="1" />
 	</Style>
+
+	<!-- Круглые огни светофора -->
+	<Style Selector="Border.Light">
+		<Setter Property="CornerRadius" Value="50" />
+
+		<Setter Property="BorderBrush" Value="Black" />
+		<Setter Property="BorderThickness" Value="2" />
+	</Style>
 </Styles>

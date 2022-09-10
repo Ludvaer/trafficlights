@@ -20,10 +20,10 @@
 			<StackPanel>
 				<Grid ColumnDefinitions="*, *" RowDefinitions="*">
 					<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0">
-						<Border Width="100" Height="100" Background="{ Binding LastColor }">
+						
+						<Border Classes="Light" Width="100" Height="100" Background="{ Binding LastColor }">
 							
 						</Border>
-						<!--<TextBlock Text="{ Binding LastButton }" /> -->
 					</Border>
 
 					<Border Classes="VisibleBorders" Grid.Column="1" Grid.Row="0">
