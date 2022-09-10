@@ -18,7 +18,7 @@
 
 			<!-- Таблица в верхней части экрана -->
 			<StackPanel>
-				<Grid ColumnDefinitions="Auto, Auto" RowDefinitions="*">
+				<Grid ColumnDefinitions="*, *" RowDefinitions="*">
 					<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0" Background="Blue">
 						<TextBlock Text="Yiff" />
 					</Border>
