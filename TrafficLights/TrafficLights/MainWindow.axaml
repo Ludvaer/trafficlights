@@ -19,12 +19,16 @@
 			<!-- Таблица в верхней части экрана -->
 			<StackPanel>
 				<Grid ColumnDefinitions="*, *" RowDefinitions="*">
-					<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0" Background="Blue">
+					<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0">
 						<TextBlock Text="Yiff" />
 					</Border>
 
-					<Border Classes="VisibleBorders" Grid.Column="1" Grid.Row="0" Background="Red">
-						<TextBlock Text="Yerf" />
+					<Border Classes="VisibleBorders" Grid.Column="1" Grid.Row="0">
+						<StackPanel>
+							<Button Content="Красный" Width="200" />
+							<Button Content="Жёлтый" Width="200" />
+							<Button Content="Зеленый" Width="200" />
+						</StackPanel>
 					</Border>
 				</Grid>
 			</StackPanel>
@@ -32,9 +36,11 @@
 
 		<!-- Нижняя ячейка -->
 		<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="1">
-			<StackPanel>
-				<TextBlock Text="Yuff" />
-			</StackPanel>
+			<DockPanel>
+				<TextBlock Text="Console:" DockPanel.Dock="Top" />
+			
+				<TextBox IsReadOnly="True" AcceptsReturn="True" Text="Here will be console"/>
+			</DockPanel>
 		</Border>
 	</Grid>
 	
