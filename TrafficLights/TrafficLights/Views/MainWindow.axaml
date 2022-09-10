@@ -20,7 +20,7 @@
 			<StackPanel>
 				<Grid ColumnDefinitions="*, *" RowDefinitions="*">
 					<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0">
-						<TextBlock Text="Yiff" />
+						<TextBlock Text="{ Binding LastButton }" />
 					</Border>
 
 					<Border Classes="VisibleBorders" Grid.Column="1" Grid.Row="0">

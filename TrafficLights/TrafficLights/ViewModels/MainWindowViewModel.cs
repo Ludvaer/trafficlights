@@ -26,6 +26,20 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressGreenCommand { get; }
 
         /// <summary>
+        /// Последняя нажатая кнопка
+        /// </summary>
+        private string _lastButton;
+
+        /// <summary>
+        /// Код для доступа к последней нажатой кнопке
+        /// </summary>
+        public string LastButton
+        {
+            get => _lastButton;
+            set => this.RaiseAndSetIfChanged(ref _lastButton, value);
+        }
+
+        /// <summary>
         /// Текст в консоли
         /// </summary>
         private string _consoleText;
@@ -51,7 +65,8 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            AddLineToConsole("Нажата касная кнопка");
+            LastButton = "Красная";
+            AddLineToConsole("Нажата красная кнопка");
         }
 
         /// <summary>
@@ -59,6 +74,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
+            LastButton = "Жёлтая";
             AddLineToConsole("Нажата жёлтая кнопка");
         }
 
@@ -67,6 +83,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
+            LastButton = "Зелёная";
             AddLineToConsole("Нажата зелёная кнопка");
         }
 
