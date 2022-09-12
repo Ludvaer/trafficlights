@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using TrafficLights.Models;
 
 namespace TrafficLights.ViewModels
 {
@@ -88,25 +89,17 @@ namespace TrafficLights.ViewModels
         }
 
         /// <summary>
-        /// Переменная,где показывается, горит красный огонь или нет. По умолчанию ложь
+        /// Модель светофора
         /// </summary>
-        private bool _isRedLightOn;
-
-        /// <summary>
-        /// Переменная,где показывается, горит жёлтый огонь или нет. По умолчанию ложь
-        /// </summary>
-        private bool _isYellowLightOn;
-
-        /// <summary>
-        /// Переменная,где показывается, горит зелёный огонь или нет. По умолчанию ложь
-        /// </summary>
-        private bool _isGreenLightOn;
+        private TrafficLightsModel _model;
 
         /// <summary>
         /// Конструктор
         /// </summary>
-        public MainWindowViewModel()
+        public MainWindowViewModel(TrafficLightsModel trafficLightsModel)
         {
+            _model = trafficLightsModel;
+
             PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
             PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
@@ -121,9 +114,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            _isRedLightOn = !_isRedLightOn; //! - меняет значение булевой переменной на противоположное
+            _model.IsRedLightOn = !_model.IsRedLightOn; //! - меняет значение булевой переменной на противоположное
 
-            RedColor = _isRedLightOn ? Brushes.Red : OffColor;
+            RedColor = _model.IsRedLightOn ? Brushes.Red : OffColor;
 
             AddLineToConsole("Нажата красная кнопка");
         }
@@ -133,9 +126,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            _isYellowLightOn = !_isYellowLightOn;
+            _model.IsYellowLightOn = !_model.IsYellowLightOn;
 
-            YellowColor = _isYellowLightOn ? Brushes.Yellow : OffColor;
+            YellowColor = _model.IsYellowLightOn ? Brushes.Yellow : OffColor;
 
             AddLineToConsole("Нажата жёлтая кнопка");
         }
@@ -145,9 +138,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            _isGreenLightOn = !_isGreenLightOn;
+            _model.IsGreenLightOn = !_model.IsGreenLightOn;
 
-            GreenColor = _isGreenLightOn ? Brushes.Green : OffColor;
+            GreenColor = _model.IsGreenLightOn ? Brushes.Green : OffColor;
 
             AddLineToConsole("Нажата зелёная кнопка");
         }
