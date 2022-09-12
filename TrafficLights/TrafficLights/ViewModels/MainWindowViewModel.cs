@@ -33,6 +33,11 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressGreenCommand { get; }
 
         /// <summary>
+        /// Кнопка проверки огней
+        /// </summary>
+        public ReactiveCommand<Unit, Unit> PressCheckCommand { get; }
+
+        /// <summary>
         /// Цвет красного огня
         /// </summary>
         private IBrush _redColor;
@@ -103,10 +108,9 @@ namespace TrafficLights.ViewModels
             PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
             PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
+            PressCheckCommand = ReactiveCommand.Create(OnCheckPressed);
 
-            RedColor = OffColor;
-            YellowColor = OffColor;
-            GreenColor = OffColor;
+            ProcessState();
         }
 
         /// <summary>
@@ -116,7 +120,7 @@ namespace TrafficLights.ViewModels
         {
             _model.IsRedLightOn = !_model.IsRedLightOn; //! - меняет значение булевой переменной на противоположное
 
-            RedColor = _model.IsRedLightOn ? Brushes.Red : OffColor;
+            ProcessState();
 
             AddLineToConsole("Нажата красная кнопка");
         }
@@ -128,7 +132,7 @@ namespace TrafficLights.ViewModels
         {
             _model.IsYellowLightOn = !_model.IsYellowLightOn;
 
-            YellowColor = _model.IsYellowLightOn ? Brushes.Yellow : OffColor;
+            ProcessState();
 
             AddLineToConsole("Нажата жёлтая кнопка");
         }
@@ -140,10 +144,35 @@ namespace TrafficLights.ViewModels
         {
             _model.IsGreenLightOn = !_model.IsGreenLightOn;
 
-            GreenColor = _model.IsGreenLightOn ? Brushes.Green : OffColor;
+            ProcessState();
 
             AddLineToConsole("Нажата зелёная кнопка");
         }
+
+        /// <summary>
+        /// Метод, вызываемый при нажатиии кнопки проверки
+        /// </summary>
+        private void OnCheckPressed()
+        {
+            _model.IsRedLightOn = true;
+            _model.IsYellowLightOn = true;
+            _model.IsGreenLightOn = true;
+
+            ProcessState();
+
+            AddLineToConsole("Зажигаем все лампы");
+        }
+
+        /// <summary>
+        /// Обработчик состояний (в частности - цвет сигнала)
+        /// </summary>
+        private void ProcessState()
+        {
+            RedColor = _model.IsRedLightOn ? Brushes.Red : OffColor;
+            YellowColor = _model.IsYellowLightOn ? Brushes.Yellow : OffColor;
+            GreenColor = _model.IsGreenLightOn ? Brushes.Green : OffColor;
+        }
+
 
         /// <summary>
         /// Добавляет новую строку в консоль
