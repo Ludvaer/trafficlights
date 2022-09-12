@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using TrafficLights.Models;
 using TrafficLights.ViewModels;
 using TrafficLights.Views;
 
@@ -17,9 +18,11 @@ namespace TrafficLights
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var model = new TrafficLightsModel();
+
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel()
+                    DataContext = new MainWindowViewModel(model)
                 };
             }
 
