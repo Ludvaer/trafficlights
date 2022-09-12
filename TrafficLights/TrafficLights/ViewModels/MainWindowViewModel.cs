@@ -88,6 +88,21 @@ namespace TrafficLights.ViewModels
         }
 
         /// <summary>
+        /// Переменная,где показывается, горит красный огонь или нет. По умолчанию ложь
+        /// </summary>
+        private bool _isRedLightOn;
+
+        /// <summary>
+        /// Переменная,где показывается, горит жёлтый огонь или нет. По умолчанию ложь
+        /// </summary>
+        private bool _isYellowLightOn;
+
+        /// <summary>
+        /// Переменная,где показывается, горит зелёный огонь или нет. По умолчанию ложь
+        /// </summary>
+        private bool _isGreenLightOn;
+
+        /// <summary>
         /// Конструктор
         /// </summary>
         public MainWindowViewModel()
@@ -106,9 +121,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            RedColor = Brushes.Red;
-            YellowColor = OffColor;
-            GreenColor = OffColor;
+            _isRedLightOn = !_isRedLightOn; //! - меняет значение булевой переменной на противоположное
+
+            RedColor = _isRedLightOn ? Brushes.Red : OffColor;
 
             AddLineToConsole("Нажата красная кнопка");
         }
@@ -118,9 +133,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            RedColor = OffColor;
-            YellowColor = Brushes.Yellow;
-            GreenColor = OffColor;
+            _isYellowLightOn = !_isYellowLightOn;
+
+            YellowColor = _isYellowLightOn ? Brushes.Yellow : OffColor;
 
             AddLineToConsole("Нажата жёлтая кнопка");
         }
@@ -130,9 +145,10 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            RedColor = OffColor;
-            YellowColor = OffColor;
-            GreenColor = Brushes.Green;
+            _isGreenLightOn = !_isGreenLightOn;
+
+            GreenColor = _isGreenLightOn ? Brushes.Green : OffColor;
+
             AddLineToConsole("Нажата зелёная кнопка");
         }
 
