@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using TrafficLights.Models;
 
 namespace TrafficLights.ViewModels
@@ -99,6 +101,11 @@ namespace TrafficLights.ViewModels
         private TrafficLightsModel _model;
 
         /// <summary>
+        /// Таймер для проверки ламп
+        /// </summary>
+        private System.Timers.Timer _checkLampsTimer;
+
+        /// <summary>
         /// Конструктор
         /// </summary>
         public MainWindowViewModel(TrafficLightsModel trafficLightsModel)
@@ -160,6 +167,12 @@ namespace TrafficLights.ViewModels
 
             ProcessState();
 
+            _checkLampsTimer = new System.Timers.Timer(TrafficLightsModel.CheckLength);
+            _checkLampsTimer.AutoReset = false;
+            _checkLampsTimer.Enabled = true;
+
+            _checkLampsTimer.Elapsed += OnCheckTimeoutEvent;
+
             AddLineToConsole("Зажигаем все лампы");
         }
 
@@ -173,6 +186,21 @@ namespace TrafficLights.ViewModels
             GreenColor = _model.IsGreenLightOn ? Brushes.Green : OffColor;
         }
 
+        /// <summary>
+        /// Метод, вызываемый
+        /// </summary>
+        /// <param name="source">Таймер, который вызвал метод</param>
+        /// <param name="e">Параметры истечения времени</param>
+        private void OnCheckTimeoutEvent(Object source, ElapsedEventArgs e)
+        {
+            _model.IsRedLightOn = false;
+            _model.IsYellowLightOn = false;
+            _model.IsGreenLightOn = false;
+
+            ProcessState();
+
+            AddLineToConsole("Проверка завершена, гасим все лампы");
+        }
 
         /// <summary>
         /// Добавляет новую строку в консоль
