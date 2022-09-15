@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using TrafficLights.Enums;
 using TrafficLights.Models;
 
 namespace TrafficLights.ViewModels
@@ -133,6 +134,7 @@ namespace TrafficLights.ViewModels
             // Настройка таймера мигания
             _blinkTimer = new System.Timers.Timer(TrafficLightsModel.BlinkSpeed);
             _blinkTimer.AutoReset = true;
+            _blinkTimer.Enabled = true;
 
             _blinkTimer.Elapsed += OnBlinkTimeoutEvent;
         }
@@ -199,7 +201,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnBlinkPressed()
         {
-            _blinkTimer.Start();
+            _model.YellowLightState = LightStateEnum.Blinking;
         }
 
         /// <summary>
@@ -235,7 +237,20 @@ namespace TrafficLights.ViewModels
         /// <param name="e"></param>
         private void OnBlinkTimeoutEvent(Object source, ElapsedEventArgs e)
         {
-            _model.IsYellowLightOn = !_model.IsYellowLightOn;
+            if (_model.RedLightState == LightStateEnum.Blinking)
+            {
+                _model.IsRedLightOn = !_model.IsRedLightOn;
+            }
+
+            if (_model.YellowLightState == LightStateEnum.Blinking)
+            {
+                _model.IsYellowLightOn = !_model.IsYellowLightOn;
+            }
+
+            if (_model.GreenLightState == LightStateEnum.Blinking)
+            {
+                _model.IsGreenLightOn = !_model.IsGreenLightOn;
+            }
 
             ProcessState();
         }

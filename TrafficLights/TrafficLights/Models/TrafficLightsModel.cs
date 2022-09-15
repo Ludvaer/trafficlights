@@ -1,4 +1,6 @@
-﻿namespace TrafficLights.Models
+﻿using TrafficLights.Enums;
+
+namespace TrafficLights.Models
 {
     /// <summary>
     /// Модель объекта реального мира - светофора
@@ -30,5 +32,20 @@
         /// Зелёный огонь - горит или нет?
         /// </summary>
         public bool IsGreenLightOn { get; set; } = true;
+
+        /// <summary>
+        /// Состояние красного огня
+        /// </summary>
+        public LightStateEnum RedLightState { get; set; } = LightStateEnum.Off; //по умолчанию выключен
+
+        /// <summary>
+        /// Состояние жёлтого огня
+        /// </summary>
+        public LightStateEnum YellowLightState { get; set; } = LightStateEnum.Off;
+
+        /// <summary>
+        /// Состояние зелёного огня
+        /// </summary>
+        public LightStateEnum GreenLightState { get; set; } = LightStateEnum.On;
     }
 }
