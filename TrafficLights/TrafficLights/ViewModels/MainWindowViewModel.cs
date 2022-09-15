@@ -40,6 +40,11 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressCheckCommand { get; }
 
         /// <summary>
+        /// Кнопка мигания жёлтого
+        /// </summary>
+        public ReactiveCommand<Unit, Unit> PressBlinkCommand { get; }
+
+        /// <summary>
         /// Цвет красного огня
         /// </summary>
         private IBrush _redColor;
@@ -106,6 +111,11 @@ namespace TrafficLights.ViewModels
         private System.Timers.Timer _checkLampsTimer;
 
         /// <summary>
+        /// Таймер для мигания
+        /// </summary>
+        private System.Timers.Timer _blinkTimer;
+
+        /// <summary>
         /// Конструктор
         /// </summary>
         public MainWindowViewModel(TrafficLightsModel trafficLightsModel)
@@ -116,8 +126,15 @@ namespace TrafficLights.ViewModels
             PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
             PressCheckCommand = ReactiveCommand.Create(OnCheckPressed);
+            PressBlinkCommand = ReactiveCommand.Create(OnBlinkPressed);
 
             ProcessState();
+
+            // Настройка таймера мигания
+            _blinkTimer = new System.Timers.Timer(TrafficLightsModel.BlinkSpeed);
+            _blinkTimer.AutoReset = true;
+
+            _blinkTimer.Elapsed += OnBlinkTimeoutEvent;
         }
 
         /// <summary>
@@ -167,6 +184,7 @@ namespace TrafficLights.ViewModels
 
             ProcessState();
 
+            // Настройка таймера
             _checkLampsTimer = new System.Timers.Timer(TrafficLightsModel.CheckLength);
             _checkLampsTimer.AutoReset = false;
             _checkLampsTimer.Enabled = true;
@@ -174,6 +192,14 @@ namespace TrafficLights.ViewModels
             _checkLampsTimer.Elapsed += OnCheckTimeoutEvent;
 
             AddLineToConsole("Зажигаем все лампы");
+        }
+
+        /// <summary>
+        /// Метод, вызываемый при нажатии кнопки мигания
+        /// </summary>
+        private void OnBlinkPressed()
+        {
+            _blinkTimer.Start();
         }
 
         /// <summary>
@@ -201,6 +227,19 @@ namespace TrafficLights.ViewModels
 
             AddLineToConsole("Проверка завершена, гасим все лампы");
         }
+
+        /// <summary>
+        /// Обработчик таймера мигания
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void OnBlinkTimeoutEvent(Object source, ElapsedEventArgs e)
+        {
+            _model.IsYellowLightOn = !_model.IsYellowLightOn;
+
+            ProcessState();
+        }
+
 
         /// <summary>
         /// Добавляет новую строку в консоль

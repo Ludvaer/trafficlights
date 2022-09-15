@@ -5,6 +5,12 @@
     /// </summary>
     public class TrafficLightsModel
     {
+
+        /// <summary>
+        /// Скорость мигания
+        /// </summary>
+        public const int BlinkSpeed = 500;
+
         /// <summary>
         /// Длительность проверки в миллисекундах
         /// </summary>
