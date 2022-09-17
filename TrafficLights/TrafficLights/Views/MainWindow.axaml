@@ -34,11 +34,17 @@
 
 					<Border Classes="VisibleBorders" Grid.Column="1" Grid.Row="0">
 						<StackPanel>
-							<Button Content="Красный" Width="200" Command="{ Binding PressRedCommand }"/>
-							<Button Content="Жёлтый" Width="200" Command="{ Binding PressYellowCommand }"/>
-							<Button Content="Зеленый" Width="200" Command="{ Binding PressGreenCommand }"/>
-							<Button Content="Проверка" Width="200" Command="{ Binding PressCheckCommand }"/>
-							<Button Content="Мигание" Width="200" Command="{ Binding PressBlinkCommand }"/>
+							
+							<Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto, Auto">
+
+								<Button Grid.Column="0" Grid.Row="0" Content="Красный" Width="200" Command="{ Binding PressRedCommand }"/>
+								<Button Grid.Column="0" Grid.Row="1" Content="Жёлтый" Width="200" Command="{ Binding PressYellowCommand }"/>
+								<Button Grid.Column="0" Grid.Row="2" Content="Зеленый" Width="200" Command="{ Binding PressGreenCommand }"/>
+								<Button Grid.Column="1" Grid.Row="0" Content="Проверка" Width="200" Command="{ Binding PressCheckCommand }"/>
+								<Button Grid.Column="1" Grid.Row="1" Content="Мигание" Width="200" Command="{ Binding PressBlinkCommand }"/>
+								
+							</Grid>
+							
 						</StackPanel>
 					</Border>
 				</Grid>
