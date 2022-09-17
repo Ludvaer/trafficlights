@@ -46,6 +46,6 @@ namespace TrafficLights.Models
         /// <summary>
         /// Состояние зелёного огня
         /// </summary>
-        public LightStateEnum GreenLightState { get; set; } = LightStateEnum.On;
+        public LightStateEnum GreenLightState { get; set; } = LightStateEnum.On; //по умолчанию включён
     }
 }

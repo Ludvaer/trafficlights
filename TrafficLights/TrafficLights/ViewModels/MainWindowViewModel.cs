@@ -201,7 +201,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnBlinkPressed()
         {
+            _model.RedLightState = LightStateEnum.Blinking;
             _model.YellowLightState = LightStateEnum.Blinking;
+            _model.GreenLightState = LightStateEnum.Blinking;
         }
 
         /// <summary>
