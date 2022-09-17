@@ -39,7 +39,6 @@
 							<Button Content="Зеленый" Width="200" Command="{ Binding PressGreenCommand }"/>
 							<Button Content="Проверка" Width="200" Command="{ Binding PressCheckCommand }"/>
 							<Button Content="Мигание" Width="200" Command="{ Binding PressBlinkCommand }"/>
-							<Button Content="Следующий шаг" Width="200" Command="{Binding PressNextStepCommand }"/>
 						</StackPanel>
 					</Border>
 				</Grid>

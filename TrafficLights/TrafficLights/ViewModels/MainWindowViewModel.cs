@@ -46,11 +46,6 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressBlinkCommand { get; }
 
         /// <summary>
-        /// Кнопка следующего шага автомата
-        /// </summary>
-        public ReactiveCommand<Unit,Unit> PressNextStepCommand { get; }
-
-        /// <summary>
         /// Цвет красного огня
         /// </summary>
         private IBrush _redColor;
@@ -122,6 +117,11 @@ namespace TrafficLights.ViewModels
         private System.Timers.Timer _blinkTimer;
 
         /// <summary>
+        /// Таймер для автомата
+        /// </summary>
+        private System.Timers.Timer _automatTimer;
+
+        /// <summary>
         /// Конструктор
         /// </summary>
         public MainWindowViewModel(TrafficLightsModel trafficLightsModel)
@@ -133,7 +133,6 @@ namespace TrafficLights.ViewModels
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
             PressCheckCommand = ReactiveCommand.Create(OnCheckPressed);
             PressBlinkCommand = ReactiveCommand.Create(OnBlinkPressed);
-            PressNextStepCommand = ReactiveCommand.Create(OnAutomatStep);
 
             ProcessState();
 
@@ -143,6 +142,13 @@ namespace TrafficLights.ViewModels
             _blinkTimer.Enabled = true;
 
             _blinkTimer.Elapsed += OnBlinkTimeoutEvent;
+
+            // Найстройка таймера автомата
+            _automatTimer = new System.Timers.Timer(TrafficLightsModel.GreenLightLength);
+            _automatTimer.AutoReset = true;
+            _automatTimer.Enabled = true;
+
+            _automatTimer.Elapsed += OnAutomatStep;
         }
 
         /// <summary>
@@ -304,7 +310,7 @@ namespace TrafficLights.ViewModels
         /// <summary>
         /// Шаг автомата
         /// </summary>
-        private void OnAutomatStep()
+        private void OnAutomatStep(Object source, ElapsedEventArgs e)
         {
             switch(_model.CurrentState)
             {
@@ -317,6 +323,10 @@ namespace TrafficLights.ViewModels
                     _model.GreenLightState = LightStateEnum.Off;
                     _model.YellowLightState = LightStateEnum.On;
 
+                    _automatTimer.Stop();
+                    _automatTimer.Interval = TrafficLightsModel.YellowToRedLightLength;
+                    _automatTimer.Start();
+
                     break;
 
                 // Сейчас светофор горит жёлтым, следующий - красный
@@ -327,6 +337,10 @@ namespace TrafficLights.ViewModels
 
                     _model.YellowLightState = LightStateEnum.Off;
                     _model.RedLightState = LightStateEnum.On;
+
+                    _automatTimer.Stop();
+                    _automatTimer.Interval = TrafficLightsModel.RedLightLength;
+                    _automatTimer.Start();
 
                     break;
 
@@ -339,6 +353,10 @@ namespace TrafficLights.ViewModels
                     _model.RedLightState = LightStateEnum.Off;
                     _model.YellowLightState = LightStateEnum.On;
 
+                    _automatTimer.Stop();
+                    _automatTimer.Interval = TrafficLightsModel.YellowToGreenLightLength;
+                    _automatTimer.Start();
+
                     break;
 
                 // Сейчас светофор горит жёлтым, следующий - зелёный
@@ -349,6 +367,10 @@ namespace TrafficLights.ViewModels
 
                     _model.YellowLightState = LightStateEnum.Off;
                     _model.GreenLightState = LightStateEnum.On;
+
+                    _automatTimer.Stop();
+                    _automatTimer.Interval = TrafficLightsModel.GreenLightLength;
+                    _automatTimer.Start();
 
                     break;
 
