@@ -46,6 +46,11 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressBlinkCommand { get; }
 
         /// <summary>
+        /// Кнопка следующего шага автомата
+        /// </summary>
+        public ReactiveCommand<Unit,Unit> PressNextStepCommand { get; }
+
+        /// <summary>
         /// Цвет красного огня
         /// </summary>
         private IBrush _redColor;
@@ -128,6 +133,7 @@ namespace TrafficLights.ViewModels
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
             PressCheckCommand = ReactiveCommand.Create(OnCheckPressed);
             PressBlinkCommand = ReactiveCommand.Create(OnBlinkPressed);
+            PressNextStepCommand = ReactiveCommand.Create(OnAutomatStep);
 
             ProcessState();
 
@@ -211,6 +217,33 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void ProcessState()
         {
+            if (_model.RedLightState == LightStateEnum.On)
+            {
+                _model.IsRedLightOn = true;
+            }
+            else if (_model.RedLightState == LightStateEnum.Off)
+            {
+                _model.IsRedLightOn = false;
+            }
+
+            if (_model.YellowLightState == LightStateEnum.On)
+            {
+                _model.IsYellowLightOn = true;
+            }
+            else if (_model.YellowLightState == LightStateEnum.Off)
+            {
+                _model.IsYellowLightOn = false;
+            }
+
+            if (_model.GreenLightState == LightStateEnum.On)
+            {
+                _model.IsGreenLightOn = true;
+            }
+            else if (_model.GreenLightState == LightStateEnum.Off)
+            {
+                _model.IsGreenLightOn = false;
+            }
+
             RedColor = _model.IsRedLightOn ? Brushes.Red : OffColor;
             YellowColor = _model.IsYellowLightOn ? Brushes.Yellow : OffColor;
             GreenColor = _model.IsGreenLightOn ? Brushes.Green : OffColor;
@@ -257,7 +290,6 @@ namespace TrafficLights.ViewModels
             ProcessState();
         }
 
-
         /// <summary>
         /// Добавляет новую строку в консоль
         /// </summary>
@@ -265,5 +297,69 @@ namespace TrafficLights.ViewModels
         {
             ConsoleText += $"{line}{Environment.NewLine}";
         }
+
+        #region Автомат
+
+
+        /// <summary>
+        /// Шаг автомата
+        /// </summary>
+        private void OnAutomatStep()
+        {
+            switch(_model.CurrentState)
+            {
+                // Сейчас светофор горит зелёным
+                case TrafficLightState.Green:
+
+                    // Горел зелёным, становится жёлтым
+                    _model.CurrentState = TrafficLightState.YellowToRed;
+
+                    _model.GreenLightState = LightStateEnum.Off;
+                    _model.YellowLightState = LightStateEnum.On;
+
+                    break;
+
+                // Сейчас светофор горит жёлтым, следующий - красный
+                case TrafficLightState.YellowToRed:
+
+                    // Горел жёлтым, становится красным
+                    _model.CurrentState = TrafficLightState.Red;
+
+                    _model.YellowLightState = LightStateEnum.Off;
+                    _model.RedLightState = LightStateEnum.On;
+
+                    break;
+
+                // Сейчас светофор горит красным
+                case TrafficLightState.Red:
+
+                    // Горел красным, становится жёлтым
+                    _model.CurrentState = TrafficLightState.YellowToGreen;
+
+                    _model.RedLightState = LightStateEnum.Off;
+                    _model.YellowLightState = LightStateEnum.On;
+
+                    break;
+
+                // Сейчас светофор горит жёлтым, следующий - зелёный
+                case TrafficLightState.YellowToGreen:
+
+                    // Горел жёлтым, становится зелёным
+                    _model.CurrentState = TrafficLightState.Green;
+
+                    _model.YellowLightState = LightStateEnum.Off;
+                    _model.GreenLightState = LightStateEnum.On;
+
+                    break;
+
+                default:
+                    throw new InvalidOperationException("Некорректное текущее состояние автомата");
+            }
+
+            ProcessState();
+        }
+
+
+        #endregion
     }
 }
