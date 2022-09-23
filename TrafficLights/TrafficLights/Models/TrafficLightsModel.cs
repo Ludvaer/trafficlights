@@ -14,29 +14,34 @@ namespace TrafficLights.Models
         public const int BlinkSpeed = 500;
 
         /// <summary>
-        /// Длительность проверки в миллисекундах
+        /// Длительность проверки ламп в миллисекундах
         /// </summary>
         public const int CheckLength = 3000;
 
         /// <summary>
-        /// Длительность красного сигнала
+        /// Длительность зелёного
         /// </summary>
-        public const int RedLightLength = 10000;
+        public const int GreenDuration = 10000;
 
         /// <summary>
-        /// Длительность жёлтого при переходе к красному
+        /// Длительность мигающего зелёного
         /// </summary>
-        public const int YellowToRedLightLength = 3000;
+        public const int BlinkingGreenDuration = 3000;
 
         /// <summary>
-        /// Длительность жёлтого при переходе к зелёному
+        /// Длительность жёлтого
         /// </summary>
-        public const int YellowToGreenLightLength = 3000;
+        public const int YellowDuration = 2000;
 
         /// <summary>
-        /// Длительность зелёного сигнала
+        /// Длительность красного
         /// </summary>
-        public const int GreenLightLength = 10000;
+        public const int RedDuration = 10000;
+
+        /// <summary>
+        /// Длительность красного с жёлтым
+        /// </summary>
+        public const int RedAndYellowDuration = 2000;
 
         /// <summary>
         /// Красный огонь - горит или нет?

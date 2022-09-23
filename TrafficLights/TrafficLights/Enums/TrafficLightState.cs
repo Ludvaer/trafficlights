@@ -11,14 +11,19 @@
         Red,
 
         /// <summary>
-        /// Жёлтый от красного к зелёному
+        /// Зелёный мигающий
         /// </summary>
-        YellowToGreen,
+        BlinkingGreen,
 
         /// <summary>
-        /// Жёлтый от зелёного к красному
+        /// Жёлтый
         /// </summary>
-        YellowToRed,
+        Yellow,
+
+        /// <summary>
+        /// Красный с жёлтым
+        /// </summary>
+        RedAndYellow,
 
         /// <summary>
         /// Зелёный

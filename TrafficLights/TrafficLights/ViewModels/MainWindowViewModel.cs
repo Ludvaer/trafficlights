@@ -144,7 +144,7 @@ namespace TrafficLights.ViewModels
             _blinkTimer.Elapsed += OnBlinkTimeoutEvent;
 
             // Найстройка таймера автомата
-            _automatTimer = new System.Timers.Timer(TrafficLightsModel.GreenLightLength);
+            _automatTimer = new System.Timers.Timer(TrafficLightsModel.GreenDuration);
             _automatTimer.AutoReset = true;
             _automatTimer.Enabled = true;
 
@@ -314,64 +314,74 @@ namespace TrafficLights.ViewModels
         {
             switch(_model.CurrentState)
             {
-                // Сейчас светофор горит зелёным
+                // Горит зелёным
                 case TrafficLightState.Green:
 
-                    // Горел зелёным, становится жёлтым
-                    _model.CurrentState = TrafficLightState.YellowToRed;
+                    _model.CurrentState = TrafficLightState.BlinkingGreen;
+
+                    _model.GreenLightState = LightStateEnum.Blinking;
+                    _model.YellowLightState = LightStateEnum.Off;
+                    _model.RedLightState = LightStateEnum.Off;
+
+                    _automatTimer.Stop();
+                    _automatTimer.Interval = TrafficLightsModel.BlinkingGreenDuration;
+                    _automatTimer.Start();
+                    break;
+
+                // Мигает зелёным
+                case TrafficLightState.BlinkingGreen:
+
+                    _model.CurrentState = TrafficLightState.Yellow;
 
                     _model.GreenLightState = LightStateEnum.Off;
                     _model.YellowLightState = LightStateEnum.On;
+                    _model.RedLightState = LightStateEnum.Off;
 
                     _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.YellowToRedLightLength;
+                    _automatTimer.Interval = TrafficLightsModel.YellowDuration;
                     _automatTimer.Start();
-
                     break;
 
-                // Сейчас светофор горит жёлтым, следующий - красный
-                case TrafficLightState.YellowToRed:
+                // Горит жёлтый
+                case TrafficLightState.Yellow:
 
-                    // Горел жёлтым, становится красным
                     _model.CurrentState = TrafficLightState.Red;
 
+                    _model.GreenLightState = LightStateEnum.Off;
                     _model.YellowLightState = LightStateEnum.Off;
                     _model.RedLightState = LightStateEnum.On;
 
                     _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.RedLightLength;
+                    _automatTimer.Interval = TrafficLightsModel.RedDuration;
                     _automatTimer.Start();
-
                     break;
 
-                // Сейчас светофор горит красным
+                // Горит красный
                 case TrafficLightState.Red:
 
-                    // Горел красным, становится жёлтым
-                    _model.CurrentState = TrafficLightState.YellowToGreen;
+                    _model.CurrentState = TrafficLightState.RedAndYellow;
 
-                    _model.RedLightState = LightStateEnum.Off;
+                    _model.GreenLightState = LightStateEnum.Off;
                     _model.YellowLightState = LightStateEnum.On;
+                    _model.RedLightState = LightStateEnum.On;
 
                     _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.YellowToGreenLightLength;
+                    _automatTimer.Interval = TrafficLightsModel.RedAndYellowDuration;
                     _automatTimer.Start();
-
                     break;
 
-                // Сейчас светофор горит жёлтым, следующий - зелёный
-                case TrafficLightState.YellowToGreen:
+                // Горит красный и жёлтый
+                case TrafficLightState.RedAndYellow:
 
-                    // Горел жёлтым, становится зелёным
                     _model.CurrentState = TrafficLightState.Green;
 
-                    _model.YellowLightState = LightStateEnum.Off;
                     _model.GreenLightState = LightStateEnum.On;
+                    _model.YellowLightState = LightStateEnum.Off;
+                    _model.RedLightState = LightStateEnum.Off;
 
                     _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.GreenLightLength;
+                    _automatTimer.Interval = TrafficLightsModel.GreenDuration;
                     _automatTimer.Start();
-
                     break;
 
                 default:
