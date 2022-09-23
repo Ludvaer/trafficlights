@@ -31,7 +31,7 @@ namespace TrafficLights.Models
         /// <summary>
         /// Длительность жёлтого
         /// </summary>
-        public const int YellowDuration = 2000;
+        public const int YellowDuration = 1000;
 
         /// <summary>
         /// Длительность красного
@@ -41,7 +41,7 @@ namespace TrafficLights.Models
         /// <summary>
         /// Длительность красного с жёлтым
         /// </summary>
-        public const int RedAndYellowDuration = 2000;
+        public const int RedAndYellowDuration = 1000;
 
         /// <summary>
         /// Красный огонь - горит или нет?

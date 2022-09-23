@@ -323,9 +323,7 @@ namespace TrafficLights.ViewModels
                     _model.YellowLightState = LightStateEnum.Off;
                     _model.RedLightState = LightStateEnum.Off;
 
-                    _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.BlinkingGreenDuration;
-                    _automatTimer.Start();
+                    SetTimerInterval(TrafficLightsModel.BlinkingGreenDuration);
                     break;
 
                 // Мигает зелёным
@@ -337,9 +335,7 @@ namespace TrafficLights.ViewModels
                     _model.YellowLightState = LightStateEnum.On;
                     _model.RedLightState = LightStateEnum.Off;
 
-                    _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.YellowDuration;
-                    _automatTimer.Start();
+                    SetTimerInterval(TrafficLightsModel.YellowDuration);
                     break;
 
                 // Горит жёлтый
@@ -351,9 +347,7 @@ namespace TrafficLights.ViewModels
                     _model.YellowLightState = LightStateEnum.Off;
                     _model.RedLightState = LightStateEnum.On;
 
-                    _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.RedDuration;
-                    _automatTimer.Start();
+                    SetTimerInterval(TrafficLightsModel.RedDuration);
                     break;
 
                 // Горит красный
@@ -365,9 +359,7 @@ namespace TrafficLights.ViewModels
                     _model.YellowLightState = LightStateEnum.On;
                     _model.RedLightState = LightStateEnum.On;
 
-                    _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.RedAndYellowDuration;
-                    _automatTimer.Start();
+                    SetTimerInterval(TrafficLightsModel.RedAndYellowDuration);
                     break;
 
                 // Горит красный и жёлтый
@@ -379,9 +371,7 @@ namespace TrafficLights.ViewModels
                     _model.YellowLightState = LightStateEnum.Off;
                     _model.RedLightState = LightStateEnum.Off;
 
-                    _automatTimer.Stop();
-                    _automatTimer.Interval = TrafficLightsModel.GreenDuration;
-                    _automatTimer.Start();
+                    SetTimerInterval(TrafficLightsModel.GreenDuration);
                     break;
 
                 default:
@@ -390,6 +380,17 @@ namespace TrafficLights.ViewModels
 
             ProcessState();
         }
+
+        /// <summary>
+        /// Настраиваем интервал таймера
+        /// </summary>
+        private void SetTimerInterval(int interval)
+        {
+            _automatTimer.Stop();
+            _automatTimer.Interval = interval;
+            _automatTimer.Start();
+        }
+
 
 
         #endregion
