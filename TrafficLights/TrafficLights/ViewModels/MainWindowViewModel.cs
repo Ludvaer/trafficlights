@@ -19,11 +19,6 @@ namespace TrafficLights.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         /// <summary>
-        /// Цвет при выключенном сигнале
-        /// </summary>
-        private readonly IBrush OffColor = Brushes.Black;
-
-        /// <summary>
         /// Нажатие на красную кнопку
         /// </summary>
         public ReactiveCommand<Unit, Unit> PressRedCommand { get; }
@@ -115,11 +110,6 @@ namespace TrafficLights.ViewModels
         private System.Timers.Timer _checkLampsTimer;
 
         /// <summary>
-        /// Таймер для мигания
-        /// </summary>
-        private System.Timers.Timer _blinkTimer;
-
-        /// <summary>
         /// Таймер для автомата
         /// </summary>
         private System.Timers.Timer _automatTimer;
@@ -138,7 +128,7 @@ namespace TrafficLights.ViewModels
             
             // Запоминаем конкретный светофор
             _trafficLights = Program.Di.GetService<ITrafficLights>();
-            _trafficLights.Setup(_model);
+            _trafficLights.Setup(_model, this);
 
 
             PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
@@ -146,15 +136,6 @@ namespace TrafficLights.ViewModels
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
             PressCheckCommand = ReactiveCommand.Create(OnCheckPressed);
             PressBlinkCommand = ReactiveCommand.Create(OnBlinkPressed);
-
-            ProcessState();
-
-            // Настройка таймера мигания
-            _blinkTimer = new System.Timers.Timer(TrafficLightsModel.BlinkSpeed);
-            _blinkTimer.AutoReset = true;
-            _blinkTimer.Enabled = true;
-
-            _blinkTimer.Elapsed += OnBlinkTimeoutEvent;
 
             // Найстройка таймера автомата
             _automatTimer = new System.Timers.Timer(TrafficLightsModel.GreenDuration);
@@ -169,9 +150,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            _model.IsRedLightOn = !_model.IsRedLightOn; //! - меняет значение булевой переменной на противоположное
-
-            ProcessState();
+            _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.Blinking);
 
             AddLineToConsole("Нажата красная кнопка");
         }
@@ -181,9 +160,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            _model.IsYellowLightOn = !_model.IsYellowLightOn;
-
-            ProcessState();
+            _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.Blinking);
 
             AddLineToConsole("Нажата жёлтая кнопка");
         }
@@ -193,9 +170,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            _model.IsGreenLightOn = !_model.IsGreenLightOn;
-
-            ProcessState();
+            _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.Blinking);
 
             AddLineToConsole("Нажата зелёная кнопка");
         }
@@ -205,11 +180,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnCheckPressed()
         {
-            _model.IsRedLightOn = true;
-            _model.IsYellowLightOn = true;
-            _model.IsGreenLightOn = true;
-
-            ProcessState();
+            _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.On);
+            _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.On);
+            _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.On);
 
             // Настройка таймера
             _checkLampsTimer = new System.Timers.Timer(TrafficLightsModel.CheckLength);
@@ -232,81 +205,17 @@ namespace TrafficLights.ViewModels
         }
 
         /// <summary>
-        /// Обработчик состояний (в частности - цвет сигнала)
-        /// </summary>
-        private void ProcessState()
-        {
-            if (_model.RedLightState == LightStateEnum.On)
-            {
-                _model.IsRedLightOn = true;
-            }
-            else if (_model.RedLightState == LightStateEnum.Off)
-            {
-                _model.IsRedLightOn = false;
-            }
-
-            if (_model.YellowLightState == LightStateEnum.On)
-            {
-                _model.IsYellowLightOn = true;
-            }
-            else if (_model.YellowLightState == LightStateEnum.Off)
-            {
-                _model.IsYellowLightOn = false;
-            }
-
-            if (_model.GreenLightState == LightStateEnum.On)
-            {
-                _model.IsGreenLightOn = true;
-            }
-            else if (_model.GreenLightState == LightStateEnum.Off)
-            {
-                _model.IsGreenLightOn = false;
-            }
-
-            RedColor = _model.IsRedLightOn ? Brushes.Red : OffColor;
-            YellowColor = _model.IsYellowLightOn ? Brushes.Yellow : OffColor;
-            GreenColor = _model.IsGreenLightOn ? Brushes.Green : OffColor;
-        }
-
-        /// <summary>
         /// Метод, вызываемый
         /// </summary>
         /// <param name="source">Таймер, который вызвал метод</param>
         /// <param name="e">Параметры истечения времени</param>
         private void OnCheckTimeoutEvent(Object source, ElapsedEventArgs e)
         {
-            _model.IsRedLightOn = false;
-            _model.IsYellowLightOn = false;
-            _model.IsGreenLightOn = false;
-
-            ProcessState();
+            _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.Off);
+            _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.Off);
+            _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.Off);
 
             AddLineToConsole("Проверка завершена, гасим все лампы");
-        }
-
-        /// <summary>
-        /// Обработчик таймера мигания
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        private void OnBlinkTimeoutEvent(Object source, ElapsedEventArgs e)
-        {
-            if (_model.RedLightState == LightStateEnum.Blinking)
-            {
-                _model.IsRedLightOn = !_model.IsRedLightOn;
-            }
-
-            if (_model.YellowLightState == LightStateEnum.Blinking)
-            {
-                _model.IsYellowLightOn = !_model.IsYellowLightOn;
-            }
-
-            if (_model.GreenLightState == LightStateEnum.Blinking)
-            {
-                _model.IsGreenLightOn = !_model.IsGreenLightOn;
-            }
-
-            ProcessState();
         }
 
         /// <summary>
@@ -390,8 +299,6 @@ namespace TrafficLights.ViewModels
                 default:
                     throw new InvalidOperationException("Некорректное текущее состояние автомата");
             }
-
-            ProcessState();
         }
 
         /// <summary>

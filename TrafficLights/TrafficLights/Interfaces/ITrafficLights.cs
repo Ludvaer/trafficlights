@@ -1,5 +1,6 @@
 ﻿using TrafficLights.Enums;
 using TrafficLights.Models;
+using TrafficLights.ViewModels;
 
 namespace TrafficLights.Interfaces
 {
@@ -11,7 +12,7 @@ namespace TrafficLights.Interfaces
         /// <summary>
         /// Связать реализацию интерфейса с реальным светофором
         /// </summary>
-        void Setup(TrafficLightsModel model);
+        void Setup(TrafficLightsModel model, MainWindowViewModel viewModel);
 
         /// <summary>
         /// Изменить состояние огня
