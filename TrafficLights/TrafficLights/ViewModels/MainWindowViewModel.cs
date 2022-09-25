@@ -1,5 +1,7 @@
 ﻿using Avalonia.Media;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using TrafficLights.Enums;
+using TrafficLights.Interfaces;
 using TrafficLights.Models;
 
 namespace TrafficLights.ViewModels
@@ -122,11 +125,21 @@ namespace TrafficLights.ViewModels
         private System.Timers.Timer _automatTimer;
 
         /// <summary>
+        /// Интерфейс для управления огнями реального светофора
+        /// </summary>
+        private readonly ITrafficLights _trafficLights;
+
+        /// <summary>
         /// Конструктор
         /// </summary>
         public MainWindowViewModel(TrafficLightsModel trafficLightsModel)
         {
             _model = trafficLightsModel;
+            
+            // Запоминаем конкретный светофор
+            _trafficLights = Program.Di.GetService<ITrafficLights>();
+            _trafficLights.Setup(_model);
+
 
             PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
             PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
@@ -213,9 +226,9 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnBlinkPressed()
         {
-            _model.RedLightState = LightStateEnum.Blinking;
-            _model.YellowLightState = LightStateEnum.Blinking;
-            _model.GreenLightState = LightStateEnum.Blinking;
+            _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.Blinking);
+            _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.Blinking);
+            _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.Blinking);
         }
 
         /// <summary>
@@ -319,9 +332,9 @@ namespace TrafficLights.ViewModels
 
                     _model.CurrentState = TrafficLightState.BlinkingGreen;
 
-                    _model.GreenLightState = LightStateEnum.Blinking;
-                    _model.YellowLightState = LightStateEnum.Off;
-                    _model.RedLightState = LightStateEnum.Off;
+                    _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.Blinking);
+                    _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.Off);
+                    _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.Off);
 
                     SetTimerInterval(TrafficLightsModel.BlinkingGreenDuration);
                     break;
@@ -331,9 +344,9 @@ namespace TrafficLights.ViewModels
 
                     _model.CurrentState = TrafficLightState.Yellow;
 
-                    _model.GreenLightState = LightStateEnum.Off;
-                    _model.YellowLightState = LightStateEnum.On;
-                    _model.RedLightState = LightStateEnum.Off;
+                    _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.Off);
+                    _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.On);
+                    _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.Off);
 
                     SetTimerInterval(TrafficLightsModel.YellowDuration);
                     break;
@@ -343,9 +356,9 @@ namespace TrafficLights.ViewModels
 
                     _model.CurrentState = TrafficLightState.Red;
 
-                    _model.GreenLightState = LightStateEnum.Off;
-                    _model.YellowLightState = LightStateEnum.Off;
-                    _model.RedLightState = LightStateEnum.On;
+                    _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.Off);
+                    _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.Off);
+                    _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.On);
 
                     SetTimerInterval(TrafficLightsModel.RedDuration);
                     break;
@@ -355,9 +368,9 @@ namespace TrafficLights.ViewModels
 
                     _model.CurrentState = TrafficLightState.RedAndYellow;
 
-                    _model.GreenLightState = LightStateEnum.Off;
-                    _model.YellowLightState = LightStateEnum.On;
-                    _model.RedLightState = LightStateEnum.On;
+                    _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.Off);
+                    _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.On);
+                    _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.On);
 
                     SetTimerInterval(TrafficLightsModel.RedAndYellowDuration);
                     break;
@@ -367,9 +380,9 @@ namespace TrafficLights.ViewModels
 
                     _model.CurrentState = TrafficLightState.Green;
 
-                    _model.GreenLightState = LightStateEnum.On;
-                    _model.YellowLightState = LightStateEnum.Off;
-                    _model.RedLightState = LightStateEnum.Off;
+                    _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.On);
+                    _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.Off);
+                    _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.Off);
 
                     SetTimerInterval(TrafficLightsModel.GreenDuration);
                     break;
