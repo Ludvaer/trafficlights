@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TrafficLights",
+    "\\TrafficLights\\TrafficLights",
+    "\\TrafficLights\\TrafficLights\\ViewModels"
   ],
+  "SelectedNode": "\\TrafficLights\\TrafficLights\\ViewModels\\MainWindowViewModel.cs",
   "PreviewInSolutionExplorer": false
 }
