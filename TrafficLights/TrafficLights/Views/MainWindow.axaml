@@ -27,7 +27,7 @@
 
 							<!-- Начало кода рисования светофора -->
 
-							<views:TrafficLightsCanvas Width="200" Height="200" />
+							<views:TrafficLightsCanvas Width="150" Height="400" />
 							
 							<!-- <Border Classes="Light" Width="100" Height="100" Background="{ Binding RedColor }">
 							</Border>
