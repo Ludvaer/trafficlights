@@ -18,6 +18,11 @@ namespace TrafficLights.Views
         public readonly IBrush CircleColor = Brushes.Black;
 
         /// <summary>
+        /// Размер огней - процент от ширины светофора
+        /// </summary>
+        public const double LightsRadusPercent = 0.85;
+
+        /// <summary>
         /// Ширина линии корпуса
         /// </summary>
         private const double CaseLinesWidth = 5; 
@@ -37,8 +42,20 @@ namespace TrafficLights.Views
         /// </summary>
         public override void Render(DrawingContext context)
         {
+            // Ширина и высота прямоугольника  
             var width = Width;
             var height = Height;
+
+            // Горизонтальный центр треугольника
+            var centerX = width / 2;
+
+            // Вертикальные центры огней
+            var centerRedY = 1 * height / 4;
+            var centerYellowY = 2 * height / 4;
+            var centerGreenY = 3 * height / 4;
+
+            // Радиусы контуров огней
+            var lightsContoursRaduses = LightsRadusPercent * width / 2;
 
             // Рисуем корпус светофора
             var casePen = new Pen(CaseColor, CaseLinesWidth, lineCap: PenLineCap.Square);
@@ -46,7 +63,15 @@ namespace TrafficLights.Views
 
             // Рисуем круги
             var circlePen = new Pen(CircleColor, CirclesLinesWidth, lineCap: PenLineCap.Square);
-            DrawCircle(context, 50, 50, 10, circlePen);
+
+            // Рисуем контур красного огня
+            DrawCircle(context, centerX, centerRedY, lightsContoursRaduses, circlePen);
+
+            // Рисуем контур жёлтого огня
+            DrawCircle(context, centerX, centerYellowY, lightsContoursRaduses, circlePen);
+
+            // Рисуем контур зелёного огня
+            DrawCircle(context, centerX, centerGreenY, lightsContoursRaduses, circlePen);
 
             base.Render(context);
         }
