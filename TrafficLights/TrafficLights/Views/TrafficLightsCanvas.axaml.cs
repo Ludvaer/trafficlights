@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using System;
 using System.Reflection.PortableExecutable;
 
 namespace TrafficLights.Views
@@ -10,17 +11,17 @@ namespace TrafficLights.Views
         /// <summary>
         /// Цвет корпуса
         /// </summary>
-        public readonly IBrush CaseColor = Brushes.Black;
+        private readonly IBrush CaseColor = Brushes.Black;
 
         /// <summary>
         /// Цвет кругов огней
         /// </summary>
-        public readonly IBrush CircleColor = Brushes.Black;
+        private readonly IBrush CircleColor = Brushes.Black;
 
         /// <summary>
         /// Размер огней - процент от ширины светофора
         /// </summary>
-        public const double LightsRadusPercent = 0.85;
+        private const double LightsRadusPercent = 0.85;
 
         /// <summary>
         /// Ширина линии корпуса
@@ -30,7 +31,17 @@ namespace TrafficLights.Views
         /// <summary>
         /// Ширина линии кругов
         /// </summary>
-        public const double CirclesLinesWidth = 2;
+        private const double CirclesLinesWidth = 2;
+
+        /// <summary>
+        /// Радиус светодиода
+        /// </summary>
+        private const double LedRadius = 2;
+
+        /// <summary>
+        /// Расстояние между светодиодами
+        /// </summary>
+        private const double LedSpacing = 1.5;
 
         public TrafficLightsCanvas()
         {
@@ -46,7 +57,7 @@ namespace TrafficLights.Views
             var width = Width;
             var height = Height;
 
-            // Горизонтальный центр треугольника
+            // Горизонтальный центр
             var centerX = width / 2;
 
             // Вертикальные центры огней
@@ -65,12 +76,15 @@ namespace TrafficLights.Views
             var circlePen = new Pen(CircleColor, CirclesLinesWidth, lineCap: PenLineCap.Square);
 
             // Рисуем контур красного огня
+            DrawLights(context, centerX - lightsContoursRaduses, centerRedY - lightsContoursRaduses, 2 * lightsContoursRaduses, Brushes.Red);
             DrawCircle(context, centerX, centerRedY, lightsContoursRaduses, circlePen);
 
             // Рисуем контур жёлтого огня
+            DrawLights(context, centerX - lightsContoursRaduses, centerYellowY - lightsContoursRaduses, 2 * lightsContoursRaduses, Brushes.Yellow);
             DrawCircle(context, centerX, centerYellowY, lightsContoursRaduses, circlePen);
 
             // Рисуем контур зелёного огня
+            DrawLights(context, centerX - lightsContoursRaduses, centerGreenY - lightsContoursRaduses, 2 * lightsContoursRaduses, Brushes.Green);
             DrawCircle(context, centerX, centerGreenY, lightsContoursRaduses, circlePen);
 
             base.Render(context);
@@ -82,6 +96,31 @@ namespace TrafficLights.Views
         private void DrawCircle(DrawingContext context, double x, double y, double radius, Pen pen)
         {
             context.DrawEllipse(Brushes.Transparent, pen, new Point(x, y), radius, radius);
+        }
+
+        /// <summary>
+        /// Рисование светодиода
+        /// </summary>
+        private void DrawLed(DrawingContext context, double x, double y, IBrush ledColor)
+        {
+            context.DrawEllipse(ledColor, new Pen(ledColor, 1, lineCap: PenLineCap.Square), new Point(x, y), LedRadius, LedRadius);
+        }
+
+        /// <summary>
+        /// Рисование светодиоидов в рамке огней
+        /// </summary>
+        private void DrawLights(DrawingContext context, double x, double y, double side, IBrush lightColor)
+        {
+            for (double yPos = y; yPos <= y + side; yPos += 2 * LedRadius + LedSpacing)
+            {
+                for (double xPos = x; xPos <= x + side; xPos += 2 * LedRadius + LedSpacing)
+                {
+                    if (Math.Pow(xPos - x - 0.5 * side, 2) + Math.Pow(yPos - y - 0.5 * side, 2) <= Math.Pow(0.5 * (side - LedRadius), 2))
+                    {
+                        DrawLed(context, xPos, yPos, lightColor);
+                    }
+                }
+            }
         }
     }
 }
