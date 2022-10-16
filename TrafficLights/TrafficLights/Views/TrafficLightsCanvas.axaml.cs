@@ -22,7 +22,7 @@ namespace TrafficLights.Views
         /// <summary>
         /// Цвет кругов огней
         /// </summary>
-        private readonly IBrush CircleColor = Brushes.Black;
+        private readonly IBrush CircleColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#5E5E5E");
 
         /// <summary>
         /// Размер огней - процент от ширины светофора
