@@ -79,6 +79,25 @@ namespace TrafficLights.Views
         /// </summary>
         private readonly IBrush GreenLightOffColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#035200");
 
+        /// <summary>
+        /// Цвет подложки красного огня
+        /// </summary>
+        private readonly IBrush BckgColorRed = (SolidColorBrush)new BrushConverter().ConvertFrom("#280000");
+
+        /// <summary>
+        /// Цвет подложки жёлтого огня
+        /// </summary>
+        private readonly IBrush BckgColorYellow = (SolidColorBrush)new BrushConverter().ConvertFrom("#212100");
+
+        /// <summary>
+        /// Цвет подложки зелёного огня
+        /// </summary>
+        private readonly IBrush BckgColorGreen = (SolidColorBrush)new BrushConverter().ConvertFrom("#002C04");
+
+
+        private readonly IBrush CaseBckgColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#000000");
+
+
         #region Управление огнями
 
         /// <summary>
@@ -165,21 +184,19 @@ namespace TrafficLights.Views
 
             // Рисуем корпус светофора
             var casePen = new Pen(CaseColor, CaseLinesWidth, lineCap: PenLineCap.Square);
-            context.DrawRectangle(casePen, new Rect(0, 0, width, height));
+            context.DrawRectangle(CaseBckgColor, casePen, new Rect(0, 0, width, height));
 
             // Рисуем круги
             var circlePen = new Pen(CircleColor, CirclesLinesWidth, lineCap: PenLineCap.Square);
-            
-            DrawLights(context, centerX - lightsContoursRaduses, centerRedY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsRedOn ? RedLightOnColor : RedLightOffColor);
-            DrawCircle(context, centerX, centerRedY, lightsContoursRaduses, circlePen); // Рисуем контур красного огня
 
-            // Рисуем контур жёлтого огня
-            DrawLights(context, centerX - lightsContoursRaduses, centerYellowY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsYellowOn ? YellowLightOnColor : YellowLightOffColor);
-            DrawCircle(context, centerX, centerYellowY, lightsContoursRaduses, circlePen);
+            DrawCircle(context, centerX, centerRedY, lightsContoursRaduses, circlePen, BckgColorRed); // Контур красного огня
+            DrawLights(context, centerX - lightsContoursRaduses, centerRedY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsRedOn ? RedLightOnColor : RedLightOffColor); // Красный огонь
 
-            // Рисуем контур зелёного огня
-            DrawLights(context, centerX - lightsContoursRaduses, centerGreenY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsGreenOn ? GreenLightOnColor : GreenLightOffColor);
-            DrawCircle(context, centerX, centerGreenY, lightsContoursRaduses, circlePen);
+            DrawCircle(context, centerX, centerYellowY, lightsContoursRaduses, circlePen, BckgColorYellow); // Контур жёлтого огня
+            DrawLights(context, centerX - lightsContoursRaduses, centerYellowY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsYellowOn ? YellowLightOnColor : YellowLightOffColor); // Жётый огонь
+
+            DrawCircle(context, centerX, centerGreenY, lightsContoursRaduses, circlePen, BckgColorGreen); // Контур зелёного огня            
+            DrawLights(context, centerX - lightsContoursRaduses, centerGreenY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsGreenOn ? GreenLightOnColor : GreenLightOffColor); // Зелёный огонь
 
             base.Render(context);
         }
@@ -187,9 +204,9 @@ namespace TrafficLights.Views
         /// <summary>
         /// Рисование круга
         /// </summary>
-        private void DrawCircle(DrawingContext context, double x, double y, double radius, Pen pen)
+        private void DrawCircle(DrawingContext context, double x, double y, double radius, Pen pen, IBrush bckgColor)
         {
-            context.DrawEllipse(Brushes.Transparent, pen, new Point(x, y), radius, radius);
+            context.DrawEllipse(bckgColor, pen, new Point(x, y), radius, radius);
         }
 
         /// <summary>
