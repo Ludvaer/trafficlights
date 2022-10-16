@@ -27,16 +27,8 @@
 
 							<!-- Начало кода рисования светофора -->
 
-							<views:TrafficLightsCanvas Width="150" Height="550" IsRedOn = "true" IsYellowOn = "true" IsGreenOn = "true" />
+							<views:TrafficLightsCanvas Width="150" Height="550" IsRedOn = "{ Binding IsRedOn }" IsYellowOn = "{ Binding IsYellowOn }" IsGreenOn = "{ Binding IsGreenOn }" />
 							
-							<!-- <Border Classes="Light" Width="100" Height="100" Background="{ Binding RedColor }">
-							</Border>
-					
-							<Border Classes="Light" Width="100" Height="100" Background="{ Binding YellowColor }">
-							</Border>
-					
-							<Border Classes="Light" Width="100" Height="100" Background="{ Binding GreenColor }">
-							</Border> -->
 							
 							<!-- Конец кода рисования светофора -->
 						

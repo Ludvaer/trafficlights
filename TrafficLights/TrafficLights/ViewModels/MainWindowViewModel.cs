@@ -44,45 +44,36 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressBlinkCommand { get; }
 
         /// <summary>
-        /// Цвет красного огня
+        /// Включение и выключение красного огня
         /// </summary>
-        private IBrush _redColor;
+        private bool _isRedOn;
 
-        /// <summary>
-        /// Код для доступа к красному огню светофора
-        /// </summary>
-        public IBrush RedColor
+        public bool IsRedOn
         {
-            get => _redColor;
-            set => this.RaiseAndSetIfChanged(ref _redColor, value);
+            get => _isRedOn;
+            set => this.RaiseAndSetIfChanged(ref _isRedOn, value);
         }
 
         /// <summary>
-        /// Цвет жёлтого огня
+        /// Включение и выключение жёлтого огня
         /// </summary>
-        private IBrush _yellowColor;
+        private bool _isYellowOn;
 
-        /// <summary>
-        /// Код для доступа к жёлтому огню светофора
-        /// </summary>
-        public IBrush YellowColor
+        public bool IsYellowOn
         {
-            get => _yellowColor;
-            set => this.RaiseAndSetIfChanged(ref _yellowColor, value);
+            get => _isYellowOn;
+            set => this.RaiseAndSetIfChanged(ref _isYellowOn, value);
         }
 
         /// <summary>
-        /// Цвет зелёного огня
+        /// Включение и выключение зелёного огня
         /// </summary>
-        private IBrush _greenColor;
+        private bool _isGreenOn;
 
-        /// <summary>
-        /// Код для доступа к зелёному огню светофора
-        /// </summary>
-        public IBrush GreenColor
+        public bool IsGreenOn
         {
-            get => _greenColor;
-            set => this.RaiseAndSetIfChanged(ref _greenColor, value);
+            get => _isGreenOn;
+            set => this.RaiseAndSetIfChanged(ref _isGreenOn, value);
         }
 
         /// <summary>
@@ -150,7 +141,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.Blinking);
+            _trafficLights.ChangeLightState(LightEnum.Red, LightStateEnum.On);
 
             AddLineToConsole("Нажата красная кнопка");
         }
@@ -160,7 +151,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.Blinking);
+            _trafficLights.ChangeLightState(LightEnum.Yellow, LightStateEnum.On);
 
             AddLineToConsole("Нажата жёлтая кнопка");
         }
@@ -170,7 +161,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.Blinking);
+            _trafficLights.ChangeLightState(LightEnum.Green, LightStateEnum.On);
 
             AddLineToConsole("Нажата зелёная кнопка");
         }

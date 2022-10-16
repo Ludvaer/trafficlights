@@ -1,87 +1,93 @@
-using Avalonia;
+п»їusing Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection.PortableExecutable;
+using System.Windows.Input;
 
 namespace TrafficLights.Views
 {
     public partial class TrafficLightsCanvas : UserControl
     {
         /// <summary>
-        /// Цвет корпуса
+        /// Р¦РІРµС‚ РєРѕСЂРїСѓСЃР°
         /// </summary>
         private readonly IBrush CaseColor = Brushes.Black;
 
         /// <summary>
-        /// Цвет кругов огней
+        /// Р¦РІРµС‚ РєСЂСѓРіРѕРІ РѕРіРЅРµР№
         /// </summary>
         private readonly IBrush CircleColor = Brushes.Black;
 
         /// <summary>
-        /// Размер огней - процент от ширины светофора
+        /// Р Р°Р·РјРµСЂ РѕРіРЅРµР№ - РїСЂРѕС†РµРЅС‚ РѕС‚ С€РёСЂРёРЅС‹ СЃРІРµС‚РѕС„РѕСЂР°
         /// </summary>
         private const double LightsRadusPercent = 0.85;
 
         /// <summary>
-        /// Ширина линии корпуса
+        /// РЁРёСЂРёРЅР° Р»РёРЅРёРё РєРѕСЂРїСѓСЃР°
         /// </summary>
         private const double CaseLinesWidth = 5; 
 
         /// <summary>
-        /// Ширина линии кругов
+        /// РЁРёСЂРёРЅР° Р»РёРЅРёРё РєСЂСѓРіРѕРІ
         /// </summary>
         private const double CirclesLinesWidth = 2;
 
         /// <summary>
-        /// Радиус светодиода
+        /// Р Р°РґРёСѓСЃ СЃРІРµС‚РѕРґРёРѕРґР°
         /// </summary>
         private const double LedRadius = 2;
 
         /// <summary>
-        /// Расстояние между светодиодами
+        /// Р Р°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ СЃРІРµС‚РѕРґРёРѕРґР°РјРё
         /// </summary>
         private const double LedSpacing = 1.5;
 
         /// <summary>
-        /// Включённый красный огонь
+        /// Р’РєР»СЋС‡С‘РЅРЅС‹Р№ РєСЂР°СЃРЅС‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         private readonly IBrush RedLightOnColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#FF0000");
 
         /// <summary>
-        /// Включённый жёлтый огонь
+        /// Р’РєР»СЋС‡С‘РЅРЅС‹Р№ Р¶С‘Р»С‚С‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         private readonly IBrush YellowLightOnColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFF00");
 
         /// <summary>
-        /// Включённый зелёный огонь
+        /// Р’РєР»СЋС‡С‘РЅРЅС‹Р№ Р·РµР»С‘РЅС‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         private readonly IBrush GreenLightOnColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#00FF00");
 
         /// <summary>
-        /// Выключенный красный огонь
+        /// Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ РєСЂР°СЃРЅС‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         private readonly IBrush RedLightOffColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#500000");
 
         /// <summary>
-        /// Выключенный жёлтый огонь
+        /// Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ Р¶С‘Р»С‚С‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         private readonly IBrush YellowLightOffColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#666300");
 
         /// <summary>
-        /// Выключенный зелёный огонь
+        /// Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ Р·РµР»С‘РЅС‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         private readonly IBrush GreenLightOffColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#035200");
 
-        #region Управление огнями
+        #region РЈРїСЂР°РІР»РµРЅРёРµ РѕРіРЅСЏРјРё
 
         /// <summary>
-        /// Свойство управления красным огнём
+        /// РЎРІРѕР№СЃС‚РІРѕ СѓРїСЂР°РІР»РµРЅРёСЏ РєСЂР°СЃРЅС‹Рј РѕРіРЅС‘Рј
         /// </summary>
-        public static readonly StyledProperty<bool> IsRedOnProperty = AvaloniaProperty.Register<TrafficLightsCanvas, bool>(nameof(IsRedOn));
+        public static readonly AttachedProperty<bool> IsRedOnProperty = AvaloniaProperty.RegisterAttached<TrafficLightsCanvas, Interactive, bool>(nameof(IsRedOn));
 
         /// <summary>
-        /// Горит-ли красный огонь
+        /// Р“РѕСЂРёС‚-Р»Рё РєСЂР°СЃРЅС‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         public bool IsRedOn
         {
@@ -90,12 +96,12 @@ namespace TrafficLights.Views
         }
 
         /// <summary>
-        /// Свойство управления жёлтым огнём
+        /// РЎРІРѕР№СЃС‚РІРѕ СѓРїСЂР°РІР»РµРЅРёСЏ Р¶С‘Р»С‚С‹Рј РѕРіРЅС‘Рј
         /// </summary>
-        public static readonly StyledProperty<bool> IsYellowOnProperty = AvaloniaProperty.Register<TrafficLightsCanvas, bool>(nameof(IsYellowOn));
+        public static readonly AttachedProperty<bool> IsYellowOnProperty = AvaloniaProperty.RegisterAttached<TrafficLightsCanvas, Interactive, bool>(nameof(IsYellowOn));
 
         /// <summary>
-        /// Горит-ли красный огонь
+        /// Р“РѕСЂРёС‚-Р»Рё РєСЂР°СЃРЅС‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         public bool IsYellowOn
         {
@@ -104,12 +110,12 @@ namespace TrafficLights.Views
         }
 
         /// <summary>
-        /// Свойство управления жёлтым огнём
+        /// РЎРІРѕР№СЃС‚РІРѕ СѓРїСЂР°РІР»РµРЅРёСЏ Р¶С‘Р»С‚С‹Рј РѕРіРЅС‘Рј
         /// </summary>
-        public static readonly StyledProperty<bool> IsGreenOnProperty = AvaloniaProperty.Register<TrafficLightsCanvas, bool>(nameof(IsGreenOn));
+        public static readonly AttachedProperty<bool> IsGreenOnProperty = AvaloniaProperty.RegisterAttached<TrafficLightsCanvas, Interactive, bool>(nameof(IsGreenOn));
 
         /// <summary>
-        /// Горит-ли красный огонь
+        /// Р“РѕСЂРёС‚-Р»Рё РєСЂР°СЃРЅС‹Р№ РѕРіРѕРЅСЊ
         /// </summary>
         public bool IsGreenOn
         {
@@ -119,46 +125,59 @@ namespace TrafficLights.Views
 
         #endregion
 
+
         public TrafficLightsCanvas()
         {
             InitializeComponent();
+
+            IsRedOnProperty.Changed.Subscribe(x => HandleLightChangedChanged(x.Sender, x.NewValue.GetValueOrDefault<bool>()));
+            IsYellowOnProperty.Changed.Subscribe(x => HandleLightChangedChanged(x.Sender, x.NewValue.GetValueOrDefault<bool>()));
+            IsGreenOnProperty.Changed.Subscribe(x => HandleLightChangedChanged(x.Sender, x.NewValue.GetValueOrDefault<bool>()));
         }
 
         /// <summary>
-        /// Метод отрисовки
+        /// РџРµСЂРµСЂРёСЃРѕРІР°С‚СЊ РїСЂРё РёР·РјРµРЅРµРЅРёРё СЃРѕСЃС‚РѕСЏРЅРёСЏ РѕРіРЅРµР№
+        /// </summary>
+        private void HandleLightChangedChanged(IAvaloniaObject element, bool newValue)
+        {
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// РњРµС‚РѕРґ РѕС‚СЂРёСЃРѕРІРєРё
         /// </summary>
         public override void Render(DrawingContext context)
         {
-            // Ширина и высота прямоугольника  
+            // РЁРёСЂРёРЅР° Рё РІС‹СЃРѕС‚Р° РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРєР°  
             var width = Width;
             var height = Height;
 
-            // Горизонтальный центр
+            // Р“РѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Р№ С†РµРЅС‚СЂ
             var centerX = width / 2;
 
-            // Вертикальные центры огней
+            // Р’РµСЂС‚РёРєР°Р»СЊРЅС‹Рµ С†РµРЅС‚СЂС‹ РѕРіРЅРµР№
             var centerRedY = 1 * height / 4;
             var centerYellowY = 2 * height / 4;
             var centerGreenY = 3 * height / 4;
 
-            // Радиусы контуров огней
+            // Р Р°РґРёСѓСЃС‹ РєРѕРЅС‚СѓСЂРѕРІ РѕРіРЅРµР№
             var lightsContoursRaduses = LightsRadusPercent * width / 2;
 
-            // Рисуем корпус светофора
+            // Р РёСЃСѓРµРј РєРѕСЂРїСѓСЃ СЃРІРµС‚РѕС„РѕСЂР°
             var casePen = new Pen(CaseColor, CaseLinesWidth, lineCap: PenLineCap.Square);
             context.DrawRectangle(casePen, new Rect(0, 0, width, height));
 
-            // Рисуем круги
+            // Р РёСЃСѓРµРј РєСЂСѓРіРё
             var circlePen = new Pen(CircleColor, CirclesLinesWidth, lineCap: PenLineCap.Square);
             
             DrawLights(context, centerX - lightsContoursRaduses, centerRedY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsRedOn ? RedLightOnColor : RedLightOffColor);
-            DrawCircle(context, centerX, centerRedY, lightsContoursRaduses, circlePen); // Рисуем контур красного огня
+            DrawCircle(context, centerX, centerRedY, lightsContoursRaduses, circlePen); // Р РёСЃСѓРµРј РєРѕРЅС‚СѓСЂ РєСЂР°СЃРЅРѕРіРѕ РѕРіРЅСЏ
 
-            // Рисуем контур жёлтого огня
+            // Р РёСЃСѓРµРј РєРѕРЅС‚СѓСЂ Р¶С‘Р»С‚РѕРіРѕ РѕРіРЅСЏ
             DrawLights(context, centerX - lightsContoursRaduses, centerYellowY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsYellowOn ? YellowLightOnColor : YellowLightOffColor);
             DrawCircle(context, centerX, centerYellowY, lightsContoursRaduses, circlePen);
 
-            // Рисуем контур зелёного огня
+            // Р РёСЃСѓРµРј РєРѕРЅС‚СѓСЂ Р·РµР»С‘РЅРѕРіРѕ РѕРіРЅСЏ
             DrawLights(context, centerX - lightsContoursRaduses, centerGreenY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsGreenOn ? GreenLightOnColor : GreenLightOffColor);
             DrawCircle(context, centerX, centerGreenY, lightsContoursRaduses, circlePen);
 
@@ -166,7 +185,7 @@ namespace TrafficLights.Views
         }
 
         /// <summary>
-        /// Рисование круга
+        /// Р РёСЃРѕРІР°РЅРёРµ РєСЂСѓРіР°
         /// </summary>
         private void DrawCircle(DrawingContext context, double x, double y, double radius, Pen pen)
         {
@@ -174,7 +193,7 @@ namespace TrafficLights.Views
         }
 
         /// <summary>
-        /// Рисование светодиода
+        /// Р РёСЃРѕРІР°РЅРёРµ СЃРІРµС‚РѕРґРёРѕРґР°
         /// </summary>
         private void DrawLed(DrawingContext context, double x, double y, IBrush ledColor)
         {
@@ -182,7 +201,7 @@ namespace TrafficLights.Views
         }
 
         /// <summary>
-        /// Рисование светодиоидов в рамке огней
+        /// Р РёСЃРѕРІР°РЅРёРµ СЃРІРµС‚РѕРґРёРѕРёРґРѕРІ РІ СЂР°РјРєРµ РѕРіРЅРµР№
         /// </summary>
         private void DrawLights(DrawingContext context, double x, double y, double side, IBrush lightColor)
         {
