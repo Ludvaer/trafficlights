@@ -43,6 +43,82 @@ namespace TrafficLights.Views
         /// </summary>
         private const double LedSpacing = 1.5;
 
+        /// <summary>
+        /// Включённый красный огонь
+        /// </summary>
+        private readonly IBrush RedLightOnColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#FF0000");
+
+        /// <summary>
+        /// Включённый жёлтый огонь
+        /// </summary>
+        private readonly IBrush YellowLightOnColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFF00");
+
+        /// <summary>
+        /// Включённый зелёный огонь
+        /// </summary>
+        private readonly IBrush GreenLightOnColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#00FF00");
+
+        /// <summary>
+        /// Выключенный красный огонь
+        /// </summary>
+        private readonly IBrush RedLightOffColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#500000");
+
+        /// <summary>
+        /// Выключенный жёлтый огонь
+        /// </summary>
+        private readonly IBrush YellowLightOffColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#666300");
+
+        /// <summary>
+        /// Выключенный зелёный огонь
+        /// </summary>
+        private readonly IBrush GreenLightOffColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#035200");
+
+        #region Управление огнями
+
+        /// <summary>
+        /// Свойство управления красным огнём
+        /// </summary>
+        public static readonly StyledProperty<bool> IsRedOnProperty = AvaloniaProperty.Register<TrafficLightsCanvas, bool>(nameof(IsRedOn));
+
+        /// <summary>
+        /// Горит-ли красный огонь
+        /// </summary>
+        public bool IsRedOn
+        {
+            get { return GetValue(IsRedOnProperty); }
+            set { SetValue(IsRedOnProperty, value); }
+        }
+
+        /// <summary>
+        /// Свойство управления жёлтым огнём
+        /// </summary>
+        public static readonly StyledProperty<bool> IsYellowOnProperty = AvaloniaProperty.Register<TrafficLightsCanvas, bool>(nameof(IsYellowOn));
+
+        /// <summary>
+        /// Горит-ли красный огонь
+        /// </summary>
+        public bool IsYellowOn
+        {
+            get { return GetValue(IsYellowOnProperty); }
+            set { SetValue(IsYellowOnProperty, value); }
+        }
+
+        /// <summary>
+        /// Свойство управления жёлтым огнём
+        /// </summary>
+        public static readonly StyledProperty<bool> IsGreenOnProperty = AvaloniaProperty.Register<TrafficLightsCanvas, bool>(nameof(IsGreenOn));
+
+        /// <summary>
+        /// Горит-ли красный огонь
+        /// </summary>
+        public bool IsGreenOn
+        {
+            get { return GetValue(IsGreenOnProperty); }
+            set { SetValue(IsGreenOnProperty, value); }
+        }
+
+        #endregion
+
         public TrafficLightsCanvas()
         {
             InitializeComponent();
@@ -74,17 +150,16 @@ namespace TrafficLights.Views
 
             // Рисуем круги
             var circlePen = new Pen(CircleColor, CirclesLinesWidth, lineCap: PenLineCap.Square);
-
-            // Рисуем контур красного огня
-            DrawLights(context, centerX - lightsContoursRaduses, centerRedY - lightsContoursRaduses, 2 * lightsContoursRaduses, Brushes.Red);
-            DrawCircle(context, centerX, centerRedY, lightsContoursRaduses, circlePen);
+            
+            DrawLights(context, centerX - lightsContoursRaduses, centerRedY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsRedOn ? RedLightOnColor : RedLightOffColor);
+            DrawCircle(context, centerX, centerRedY, lightsContoursRaduses, circlePen); // Рисуем контур красного огня
 
             // Рисуем контур жёлтого огня
-            DrawLights(context, centerX - lightsContoursRaduses, centerYellowY - lightsContoursRaduses, 2 * lightsContoursRaduses, Brushes.Yellow);
+            DrawLights(context, centerX - lightsContoursRaduses, centerYellowY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsYellowOn ? YellowLightOnColor : YellowLightOffColor);
             DrawCircle(context, centerX, centerYellowY, lightsContoursRaduses, circlePen);
 
             // Рисуем контур зелёного огня
-            DrawLights(context, centerX - lightsContoursRaduses, centerGreenY - lightsContoursRaduses, 2 * lightsContoursRaduses, Brushes.Green);
+            DrawLights(context, centerX - lightsContoursRaduses, centerGreenY - lightsContoursRaduses, 2 * lightsContoursRaduses, IsGreenOn ? GreenLightOnColor : GreenLightOffColor);
             DrawCircle(context, centerX, centerGreenY, lightsContoursRaduses, circlePen);
 
             base.Render(context);

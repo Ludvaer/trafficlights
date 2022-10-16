@@ -3,8 +3,9 @@
     "",
     "\\TrafficLights",
     "\\TrafficLights\\TrafficLights",
-    "\\TrafficLights\\TrafficLights\\ViewModels"
+    "\\TrafficLights\\TrafficLights\\ViewModels",
+    "\\TrafficLights\\TrafficLights\\Views"
   ],
-  "SelectedNode": "\\TrafficLights\\TrafficLights.sln",
+  "SelectedNode": "\\TrafficLights\\TrafficLights\\Views\\TrafficLightsCanvas.axaml.cs",
   "PreviewInSolutionExplorer": false
 }
