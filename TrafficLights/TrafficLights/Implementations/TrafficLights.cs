@@ -1,5 +1,4 @@
-﻿using Avalonia.Media;
-using System;
+﻿using System;
 using System.Timers;
 using TrafficLights.Enums;
 using TrafficLights.Interfaces;
@@ -17,11 +16,6 @@ namespace TrafficLights.Implementations
         /// Таймер для мигания
         /// </summary>
         private System.Timers.Timer _blinkTimer;
-
-        /// <summary>
-        /// Цвет при выключенном сигнале
-        /// </summary>
-        private readonly IBrush OffColor = Brushes.Black;
 
         /// <summary>
         /// Конструктор
@@ -62,6 +56,8 @@ namespace TrafficLights.Implementations
                 default:
                     throw new ArgumentException(nameof(light));
             }
+
+            ProcessState();
         }
 
         /// <summary>
@@ -121,9 +117,9 @@ namespace TrafficLights.Implementations
                 _model.IsGreenLightOn = false;
             }
 
-            _viewModel.RedColor = _model.IsRedLightOn ? Brushes.Red : OffColor;
-            _viewModel.YellowColor = _model.IsYellowLightOn ? Brushes.Yellow : OffColor;
-            _viewModel.GreenColor = _model.IsGreenLightOn ? Brushes.Green : OffColor;
+            _viewModel.IsRedOn = _model.IsRedLightOn;
+            _viewModel.IsYellowOn = _model.IsYellowLightOn;
+            _viewModel.IsGreenOn = _model.IsGreenLightOn;
         }
     }
 }
