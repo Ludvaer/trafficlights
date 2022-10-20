@@ -43,6 +43,11 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressGreenCommand => GreenTrafficLightColor.PressCommand;
 
         /// <summary>
+        /// Кнопка мигания жёлтого
+        /// </summary>
+        public ReactiveCommand<Unit, Unit> PressBlinkCommand { get; }
+
+        /// <summary>
         /// Цвет красного огня
         /// </summary>
         private IBrush _redColor;
@@ -98,6 +103,13 @@ namespace TrafficLights.ViewModels
             get => _consoleText;
             set => this.RaiseAndSetIfChanged(ref _consoleText, value);
         }
+
+
+
+        /// <summary>
+        /// Таймер для мигания
+        /// </summary>
+        private System.Timers.Timer _blinkTimer;
 
 
         #endregion
@@ -178,18 +190,21 @@ namespace TrafficLights.ViewModels
             /// <summary>
             /// метод обработки нажатия кнопки включения соответствующего цвета
             /// </summary>
-            private void OnPressed()
+            public void Toggle()
             {
                 ModelIsLightOn = !ModelIsLightOn;
-                _mainViewModel.ProcessState();
+                /*_mainViewModel.*/ProcessState();
+            }
+            private void OnPressed()
+            {
+                Toggle();
                 _mainViewModel.AddLineToConsole($"Нажата {_colorNameButtonAdjective} кнопка");
-
             }
 
-            /// <summary>
-            /// метод проверки состояния и отрисовки лампы
-            /// </summary>
-            public void ProcessState()
+                /// <summary>
+                /// метод проверки состояния и отрисовки лампы
+                /// </summary>
+                public void ProcessState()
             {
                 LightColor = ModelIsLightOn ? _onColor : _mainViewModel.OffColor;
             }
@@ -255,7 +270,33 @@ namespace TrafficLights.ViewModels
                 YellowTrafficLightColor = new TrafficLightColorViewModelYellow(this),
                 GreenTrafficLightColor = new TrafficLightColorViewModelGreen(this),
             };
+            PressBlinkCommand = ReactiveCommand.Create(OnBlinkPressed);
+
             ProcessState();
+
+            // Настройка таймера мигания
+            _blinkTimer = new System.Timers.Timer(TrafficLightsModel.BlinkSpeed);
+            _blinkTimer.AutoReset = true;
+
+            _blinkTimer.Elapsed += OnBlinkTimeoutEvent;
+        }
+
+        /// <summary>
+        /// Метод, вызываемый при нажатии кнопки мигания
+        /// </summary>
+        private void OnBlinkPressed()
+        {
+            _blinkTimer.Start();
+        }
+
+        /// <summary>
+        /// Обработчик таймера мигания
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void OnBlinkTimeoutEvent(Object source, ElapsedEventArgs e)
+        {
+            YellowTrafficLightColor.Toggle();
         }
 
         /// <summary>
