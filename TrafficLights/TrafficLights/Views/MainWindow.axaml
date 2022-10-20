@@ -21,9 +21,9 @@
 				<Grid ColumnDefinitions="*, *" RowDefinitions="*">
 					<Border Classes="VisibleBorders" Grid.Column="0" Grid.Row="0">
 						<StackPanel Orientation="Horizontal">
-							<Border Classes="Light" Width="100" Height="100" Background="{ Binding RedLightColor }"/>
-							<Border Classes="Light" Width="100" Height="100" Background="{ Binding YellowLightColor }"/>	
-							<Border Classes="Light" Width="100" Height="100" Background="{ Binding GreenLightColor }"/>
+							<Border Classes="Light" Width="100" Height="100" Background="{ Binding RedColor}"/>
+							<Border Classes="Light" Width="100" Height="100" Background="{ Binding YellowColor }"/>	
+							<Border Classes="Light" Width="100" Height="100" Background="{ Binding GreenColor }"/>
 						</StackPanel>
 					</Border>
 

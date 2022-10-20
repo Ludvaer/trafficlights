@@ -12,26 +12,14 @@ namespace TrafficLights.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+
+        #region Properties
+
         /// <summary>
         /// Цвет при выключенном сигнале
         /// </summary>
         private readonly IBrush OffColor = Brushes.Black;
 
-        #region Properties
-        /// <summary>
-        /// Нажатие на красную кнопку
-        /// </summary>
-        public ReactiveCommand<Unit, Unit> PressRedCommand { get; }
-
-        /// <summary>
-        /// Нажатие на жёлтую кнопку
-        /// </summary>
-        public ReactiveCommand<Unit, Unit> PressYellowCommand { get; }
-
-        /// <summary>
-        /// Нажатие на зелёную кнопку
-        /// </summary>
-        public ReactiveCommand<Unit, Unit> PressGreenCommand { get; }
 
         /// <summary>
         /// Кнопка проверки огней
@@ -39,44 +27,62 @@ namespace TrafficLights.ViewModels
         public ReactiveCommand<Unit, Unit> PressCheckCommand { get; }
 
         /// <summary>
-        /// Цвет красной лампы
+        /// Нажатие на красную кнопку
         /// </summary>
-        private IBrush _redColor;
-        /// <summary>
-        /// Цвет жёлтой лампы
-        /// </summary>
-        private IBrush _yellowColor;
-        /// <summary>
-        /// Цвет зелёной лампы
-        /// </summary>
-        private IBrush _greenColor;
+        public ReactiveCommand<Unit, Unit> PressRedCommand => RedTrafficLightColor.PressCommand;
 
         /// <summary>
-        /// ПЦвет красной лампы светофора
+        /// Нажатие на жёлтую кнопку
         /// </summary>
-        public IBrush RedLightColor
+        public ReactiveCommand<Unit, Unit> PressYellowCommand => YellowTrafficLightColor.PressCommand;
+
+        /// <summary>
+        /// Нажатие на зелёную кнопку
+        /// </summary>
+        public ReactiveCommand<Unit, Unit> PressGreenCommand => GreenTrafficLightColor.PressCommand;
+
+        /// <summary>
+        /// Цвет красного огня
+        /// </summary>
+        private IBrush _redColor;
+
+        /// <summary>
+        /// Код для доступа к красному огню светофора
+        /// </summary>
+        public IBrush RedColor
         {
             get => _redColor;
             set => this.RaiseAndSetIfChanged(ref _redColor, value);
         }
+
         /// <summary>
-        /// ПЦвет жёлтой лампы светофора
+        /// Цвет жёлтого огня
         /// </summary>
-        public IBrush YellowLightColor
+        private IBrush _yellowColor;
+
+        /// <summary>
+        /// Код для доступа к жёлтому огню светофора
+        /// </summary>
+        public IBrush YellowColor
         {
             get => _yellowColor;
             set => this.RaiseAndSetIfChanged(ref _yellowColor, value);
         }
 
+        /// <summary>
+        /// Цвет зелёного огня
+        /// </summary>
+        private IBrush _greenColor;
 
         /// <summary>
-        /// Цвет зелёной лампы светофора
+        /// Код для доступа к зелёному огню светофора
         /// </summary>
-        public IBrush GreenLightColor
+        public IBrush GreenColor
         {
             get => _greenColor;
             set => this.RaiseAndSetIfChanged(ref _greenColor, value);
         }
+
 
         /// <summary>
         /// Текст в консоли
@@ -96,112 +102,151 @@ namespace TrafficLights.ViewModels
         #endregion
 
 
-        /// <summary>
-        /// Возможные цвета светофора.
-        /// </summary>
-        enum TrafficLightColor
-        {
-            Black,
-            Red,
-            Yellow,
-            Green,    
-        }
 
 
-        /// <summary>
-        /// Установка выбранного цвета. Выключение ненужных, включение нужнго света.
-        /// </summary>
-        /// <param name="color"></param>
-        private void  SetColor(TrafficLightColor color)
-        {
-            _model.IsRedLightOn = color == TrafficLightColor.Red;
-            _model.IsYellowLightOn = color == TrafficLightColor.Yellow;
-            _model.IsGreenLightOn = color == TrafficLightColor.Green;
-            ProcessState();
-
-        }
+  
         /// <summary>
         /// Обработчик состояний (в частности - цвет сигнала)
         /// </summary>
         private void ProcessState()
         {
-            RedLightColor = _model.IsRedLightOn ? Brushes.Red : OffColor;
-            YellowLightColor = _model.IsYellowLightOn ? Brushes.Yellow : OffColor;
-            GreenLightColor = _model.IsGreenLightOn ? Brushes.MediumSeaGreen : OffColor; //[Medium]Turquoise may be fine too
-        }
-
-        /// <summary>
-        /// проверяет ключённость света
-        /// </summary>
-        /// <param name="color"></param>
-        private bool IsLightOn(TrafficLightColor color)
-        {
-            switch (color)
+            foreach(var color in Colors)
             {
-                case TrafficLightColor.Red:
-                    return _model.IsRedLightOn;
-                case TrafficLightColor.Yellow:
-                    return _model.IsYellowLightOn;
-                case TrafficLightColor.Green:
-                    return _model.IsGreenLightOn;
-                default:
-                    return false;
+                color.ProcessState();
             }
         }
 
-        /// <summary>
-        /// Общий метод нажатия кнопки.
-        /// </summary>
-        /// <param name="color"></param>
-        private void ToggleColoredButton(TrafficLightColor color)
-        {
-            if (IsLightOn(color))
-                SetColor(TrafficLightColor.Black);
-            else
-                SetColor(color);
-        }
+
+
 
         private TrafficLightsModel _model;
 
 
+        /// <summary>
+        /// Класс для избегания копипасты кода для каждого из трёх цветов.
+        /// Объект поддерживает логику одногоиз цветов внутри MainWindowViewModel
+        /// </summary>
+        public abstract class TrafficLightColorViewModel : ViewModelBase
+        {
+            /// <summary>
+            /// модель основного окна для обращения кобщим полям иметодам
+            /// </summary>
+            protected MainWindowViewModel _mainViewModel;
+            /// <summary>
+            /// имя цвета
+            /// </summary>
+            protected string _colorName;
+            /// <summary>
+            /// имя цвета в виде прилагательного для использования со словом кнопка
+            /// </summary>
+            protected string _colorNameButtonAdjective;
+            /// <summary>
+            /// Цвет которым рисовать включённый свет
+            /// </summary>
+            protected IBrush _onColor;
+            /// <summary>
+            /// проперти которое надо переопредлить так чтобы оно синхронизировалось с моделью
+            /// </summary>
+            protected abstract bool _modelIsLightOn { get; set; }
+
+       
+            public TrafficLightColorViewModel(MainWindowViewModel mainViewModel)
+            {
+                _mainViewModel = mainViewModel;
+                PressCommand = ReactiveCommand.Create(OnPressed);
+            }
+            
+            /// <summary>
+            /// команда нажатия на кнопку включения света
+            /// </summary>
+            public ReactiveCommand<Unit, Unit> PressCommand { get; }
+
+            /// <summary>
+            ///  Свойство которое должно быть связано с цветом которым сейчас отрисована лампа световора в интерфейсе
+            /// </summary>
+            public virtual IBrush LightColor
+            {
+                get; set;
+            }
+
+   
+            /// <summary>
+            /// метод обработки нажатия кнопки включения соответствующего цвета
+            /// </summary>
+            private void OnPressed()
+            {
+                _modelIsLightOn = !_modelIsLightOn;
+                _mainViewModel.ProcessState();
+                _mainViewModel.AddLineToConsole($"Нажата {_colorNameButtonAdjective} кнопка");
+
+            }
+
+            /// <summary>
+            /// метод проверки состояния и отрисовки лампы
+            /// </summary>
+            public void ProcessState()
+            {
+                LightColor = _modelIsLightOn ? _onColor : _mainViewModel.OffColor;
+            }
+        }
+
+        public class TrafficLightColorViewModelRed : TrafficLightColorViewModel
+        {
+            public TrafficLightColorViewModelRed(MainWindowViewModel mainViewModel): base(mainViewModel)
+            {
+                _colorName = "красный";
+                _colorNameButtonAdjective = "красная";
+                _onColor = Brushes.Red;
+            }
+            public override IBrush LightColor 
+            { 
+                get => _mainViewModel.RedColor; 
+                set => _mainViewModel.RedColor = value;
+            }
+            protected override bool _modelIsLightOn { get => _mainViewModel._model.IsRedLightOn; set => _mainViewModel._model.IsRedLightOn = value; }
+        }
+        public class TrafficLightColorViewModelYellow : TrafficLightColorViewModel
+        {
+            public TrafficLightColorViewModelYellow(MainWindowViewModel mainViewModel) : base(mainViewModel)
+            {
+                _colorName = "жёлтый";
+                _colorNameButtonAdjective = "жёлтая";
+                _onColor = Brushes.Yellow;
+            }
+            public override IBrush LightColor { get => _mainViewModel.YellowColor; set => _mainViewModel.YellowColor = value; }
+            protected override bool _modelIsLightOn { get => _mainViewModel._model.IsYellowLightOn; set => _mainViewModel._model.IsYellowLightOn = value; }
+        }
+
+
+        public class TrafficLightColorViewModelGreen : TrafficLightColorViewModel
+        {
+            public TrafficLightColorViewModelGreen(MainWindowViewModel mainViewModel) : base(mainViewModel)
+            {
+                _colorName = "зелёный";
+                _colorNameButtonAdjective = "зелёная";
+                _onColor = Brushes.MediumSeaGreen; //[Medium]Turquoise may be fine too
+            }
+            public override IBrush LightColor { get => _mainViewModel.GreenColor; set => _mainViewModel.GreenColor = value; }
+            protected override bool _modelIsLightOn { get => _mainViewModel._model.IsGreenLightOn; set => _mainViewModel._model.IsGreenLightOn = value; }
+        }
+
+
+        public TrafficLightColorViewModelRed RedTrafficLightColor;
+        public TrafficLightColorViewModelYellow YellowTrafficLightColor;
+        public TrafficLightColorViewModelGreen GreenTrafficLightColor;
+
+        private TrafficLightColorViewModel[] Colors;
 
         public MainWindowViewModel(TrafficLightsModel model)
         {
             _model = model;
-            PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
-            PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
-            PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
             PressCheckCommand = ReactiveCommand.Create(OnCheckPressed);
-            SetColor(TrafficLightColor.Black);
-        }
-
-        /// <summary>
-        /// Метод, вызываемый, когда нажата красная кнопка
-        /// </summary>
-        private void OnRedPressed()
-        {
-            ToggleColoredButton(TrafficLightColor.Red);
-            AddLineToConsole("Нажата красная кнопка");
-        }
-
-        /// <summary>
-        /// Метод, вызываемый, когда нажата жёлтая кнопка
-        /// </summary>
-        private void OnYellowPressed()
-        {
-            ToggleColoredButton(TrafficLightColor.Yellow);
-            AddLineToConsole("Нажата жёлтая кнопка");
-
-        }
-
-        /// <summary>
-        /// Метод, вызываемый, когда нажата зелёная кнопка
-        /// </summary>
-        private void OnGreenPressed()
-        {
-            ToggleColoredButton(TrafficLightColor.Green);
-            AddLineToConsole("Нажата зелёная кнопка");
-
+            Colors = new TrafficLightColorViewModel[]
+            {
+                RedTrafficLightColor = new TrafficLightColorViewModelRed(this),
+                YellowTrafficLightColor = new TrafficLightColorViewModelYellow(this),
+                GreenTrafficLightColor = new TrafficLightColorViewModelGreen(this),
+            };
         }
 
         /// <summary>
