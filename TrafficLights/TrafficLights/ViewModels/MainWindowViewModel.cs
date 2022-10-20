@@ -181,6 +181,7 @@ namespace TrafficLights.ViewModels
         private void OnRedPressed()
         {
             ToggleColoredButton(TrafficLightColor.Red);
+            AddLineToConsole("Нажата красная кнопка");
         }
 
         /// <summary>
@@ -189,6 +190,8 @@ namespace TrafficLights.ViewModels
         private void OnYellowPressed()
         {
             ToggleColoredButton(TrafficLightColor.Yellow);
+            AddLineToConsole("Нажата жёлтая кнопка");
+
         }
 
         /// <summary>
@@ -197,7 +200,8 @@ namespace TrafficLights.ViewModels
         private void OnGreenPressed()
         {
             ToggleColoredButton(TrafficLightColor.Green);
-          
+            AddLineToConsole("Нажата зелёная кнопка");
+
         }
 
         /// <summary>
