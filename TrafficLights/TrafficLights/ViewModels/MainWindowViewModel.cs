@@ -90,10 +90,10 @@ namespace TrafficLights.ViewModels
         /// </summary>
         enum TrafficLightColor
         {
-            Black, //turned off
+            Black,
             Red,
             Yellow,
-            Green,
+            Green,    
         }
 
 
@@ -113,10 +113,10 @@ namespace TrafficLights.ViewModels
 
 
         /// <summary>
-        /// Устанавливает цве, но отключает его если передать текущий.
+        /// Общий метод нажатия кнопки.
         /// </summary>
         /// <param name="color"></param>
-        private void SwitchColor(TrafficLightColor color)
+        private void ToggleColoredButton(TrafficLightColor color)
         {
             if (_currentLight == color)
                 SetColor(TrafficLightColor.Black);
@@ -141,8 +141,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnRedPressed()
         {
-            SwitchColor(TrafficLightColor.Red);
-            AddLineToConsole("Нажата красная кнопка");
+            ToggleColoredButton(TrafficLightColor.Red);
         }
 
         /// <summary>
@@ -150,8 +149,7 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnYellowPressed()
         {
-            SwitchColor(TrafficLightColor.Yellow);
-            AddLineToConsole("Нажата жёлтая кнопка");
+            ToggleColoredButton(TrafficLightColor.Yellow);
         }
 
         /// <summary>
@@ -159,8 +157,8 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnGreenPressed()
         {
-            SwitchColor(TrafficLightColor.Green);
-            AddLineToConsole("Нажата зелёная кнопка");
+            ToggleColoredButton(TrafficLightColor.Green);
+          
         }
 
         /// <summary>
