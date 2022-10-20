@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TrafficLights.Models
+﻿namespace TrafficLights.Models
 {
     /// <summary>
     /// Модель объекта реального мира - светофора
     /// </summary>
     public class TrafficLightsModel
     {
+
+        /// <summary>
+        /// Длительность проверки в миллисекундах
+        /// </summary>
+        public const int CheckLength = 3000;
+
         /// <summary>
         /// Красный огонь - горит или нет?
         /// </summary>

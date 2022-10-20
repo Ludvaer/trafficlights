@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using TrafficLights.Models;
 
 namespace TrafficLights.ViewModels
@@ -103,8 +104,12 @@ namespace TrafficLights.ViewModels
 
 
 
+        /// <summary>
+        /// Таймер для проверки ламп
+        /// </summary>
+        private System.Timers.Timer _checkLampsTimer;
 
-  
+
         /// <summary>
         /// Обработчик состояний (в частности - цвет сигнала)
         /// </summary>
@@ -147,7 +152,7 @@ namespace TrafficLights.ViewModels
             /// <summary>
             /// проперти которое надо переопредлить так чтобы оно синхронизировалось с моделью
             /// </summary>
-            protected abstract bool _modelIsLightOn { get; set; }
+            public abstract bool ModelIsLightOn { get; set; }
 
        
             public TrafficLightColorViewModel(MainWindowViewModel mainViewModel)
@@ -175,7 +180,7 @@ namespace TrafficLights.ViewModels
             /// </summary>
             private void OnPressed()
             {
-                _modelIsLightOn = !_modelIsLightOn;
+                ModelIsLightOn = !ModelIsLightOn;
                 _mainViewModel.ProcessState();
                 _mainViewModel.AddLineToConsole($"Нажата {_colorNameButtonAdjective} кнопка");
 
@@ -186,10 +191,12 @@ namespace TrafficLights.ViewModels
             /// </summary>
             public void ProcessState()
             {
-                LightColor = _modelIsLightOn ? _onColor : _mainViewModel.OffColor;
+                LightColor = ModelIsLightOn ? _onColor : _mainViewModel.OffColor;
             }
         }
-
+        /// <summary>
+        /// реализация логики красного цвета
+        /// </summary>
         public class TrafficLightColorViewModelRed : TrafficLightColorViewModel
         {
             public TrafficLightColorViewModelRed(MainWindowViewModel mainViewModel): base(mainViewModel)
@@ -198,13 +205,12 @@ namespace TrafficLights.ViewModels
                 _colorNameButtonAdjective = "красная";
                 _onColor = Brushes.Red;
             }
-            public override IBrush LightColor 
-            { 
-                get => _mainViewModel.RedColor; 
-                set => _mainViewModel.RedColor = value;
-            }
-            protected override bool _modelIsLightOn { get => _mainViewModel._model.IsRedLightOn; set => _mainViewModel._model.IsRedLightOn = value; }
+            public override IBrush LightColor { get => _mainViewModel.RedColor; set => _mainViewModel.RedColor = value; }
+            public override bool ModelIsLightOn { get => _mainViewModel._model.IsRedLightOn; set => _mainViewModel._model.IsRedLightOn = value; }
         }
+        /// <summary>
+        /// реализация логики жёлтого цвета
+        /// </summary>
         public class TrafficLightColorViewModelYellow : TrafficLightColorViewModel
         {
             public TrafficLightColorViewModelYellow(MainWindowViewModel mainViewModel) : base(mainViewModel)
@@ -214,10 +220,12 @@ namespace TrafficLights.ViewModels
                 _onColor = Brushes.Yellow;
             }
             public override IBrush LightColor { get => _mainViewModel.YellowColor; set => _mainViewModel.YellowColor = value; }
-            protected override bool _modelIsLightOn { get => _mainViewModel._model.IsYellowLightOn; set => _mainViewModel._model.IsYellowLightOn = value; }
+            public override bool ModelIsLightOn { get => _mainViewModel._model.IsYellowLightOn; set => _mainViewModel._model.IsYellowLightOn = value; }
         }
 
-
+        /// <summary>
+        /// реализация логики зелёного цвета
+        /// </summary>
         public class TrafficLightColorViewModelGreen : TrafficLightColorViewModel
         {
             public TrafficLightColorViewModelGreen(MainWindowViewModel mainViewModel) : base(mainViewModel)
@@ -227,7 +235,7 @@ namespace TrafficLights.ViewModels
                 _onColor = Brushes.MediumSeaGreen; //[Medium]Turquoise may be fine too
             }
             public override IBrush LightColor { get => _mainViewModel.GreenColor; set => _mainViewModel.GreenColor = value; }
-            protected override bool _modelIsLightOn { get => _mainViewModel._model.IsGreenLightOn; set => _mainViewModel._model.IsGreenLightOn = value; }
+            public override bool ModelIsLightOn { get => _mainViewModel._model.IsGreenLightOn; set => _mainViewModel._model.IsGreenLightOn = value; }
         }
 
 
@@ -247,6 +255,7 @@ namespace TrafficLights.ViewModels
                 YellowTrafficLightColor = new TrafficLightColorViewModelYellow(this),
                 GreenTrafficLightColor = new TrafficLightColorViewModelGreen(this),
             };
+            ProcessState();
         }
 
         /// <summary>
@@ -254,13 +263,33 @@ namespace TrafficLights.ViewModels
         /// </summary>
         private void OnCheckPressed()
         {
-            _model.IsRedLightOn = true;
-            _model.IsYellowLightOn = true;
-            _model.IsGreenLightOn = true;
+            foreach (var color in Colors)
+                color.ModelIsLightOn = true;
 
             ProcessState();
 
+            _checkLampsTimer = new System.Timers.Timer(TrafficLightsModel.CheckLength);
+            _checkLampsTimer.AutoReset = false;
+            _checkLampsTimer.Enabled = true;
+
+            _checkLampsTimer.Elapsed += OnCheckTimeoutEvent;
+
             AddLineToConsole("Зажигаем все лампы");
+        }
+
+        /// <summary>
+        /// Метод, вызываемый при истичении таймера проверки
+        /// </summary>
+        /// <param name="source">Таймер, который вызвал метод</param>
+        /// <param name="e">Параметры истечения времени</param>
+        private void OnCheckTimeoutEvent(Object source, ElapsedEventArgs e)
+        {
+            foreach (var color in Colors)
+                color.ModelIsLightOn = false;
+
+            ProcessState();
+
+            AddLineToConsole("Проверка завершена, гасим все лампы");
         }
 
         /// <summary>
