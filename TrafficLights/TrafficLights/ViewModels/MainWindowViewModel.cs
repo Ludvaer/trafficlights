@@ -12,6 +12,11 @@ namespace TrafficLights.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Цвет при выключенном сигнале
+        /// </summary>
+        private readonly IBrush OffColor = Brushes.Black;
+
         #region Properties
         /// <summary>
         /// Нажатие на красную кнопку
@@ -27,6 +32,11 @@ namespace TrafficLights.ViewModels
         /// Нажатие на зелёную кнопку
         /// </summary>
         public ReactiveCommand<Unit, Unit> PressGreenCommand { get; }
+
+        /// <summary>
+        /// Кнопка проверки огней
+        /// </summary>
+        public ReactiveCommand<Unit, Unit> PressCheckCommand { get; }
 
         /// <summary>
         /// Цвет красной лампы
@@ -104,10 +114,20 @@ namespace TrafficLights.ViewModels
         /// <param name="color"></param>
         private void  SetColor(TrafficLightColor color)
         {
-            RedLightColor = (_model.IsRedLightOn = color == TrafficLightColor.Red) ? Brushes.Red : Brushes.Black;
-            YellowLightColor = (_model.IsYellowLightOn = color == TrafficLightColor.Yellow) ? Brushes.Yellow : Brushes.Black;
-            GreenLightColor = (_model.IsGreenLightOn = color == TrafficLightColor.Green) ? Brushes.MediumSeaGreen : Brushes.Black;  //[Medium]Turquoise may be fine too
+            _model.IsRedLightOn = color == TrafficLightColor.Red;
+            _model.IsYellowLightOn = color == TrafficLightColor.Yellow;
+            _model.IsGreenLightOn = color == TrafficLightColor.Green;
+            ProcessState();
 
+        }
+        /// <summary>
+        /// Обработчик состояний (в частности - цвет сигнала)
+        /// </summary>
+        private void ProcessState()
+        {
+            RedLightColor = _model.IsRedLightOn ? Brushes.Red : OffColor;
+            YellowLightColor = _model.IsYellowLightOn ? Brushes.Yellow : OffColor;
+            GreenLightColor = _model.IsGreenLightOn ? Brushes.MediumSeaGreen : OffColor; //[Medium]Turquoise may be fine too
         }
 
         /// <summary>
@@ -151,6 +171,7 @@ namespace TrafficLights.ViewModels
             PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
             PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
+            PressCheckCommand = ReactiveCommand.Create(OnCheckPressed);
             SetColor(TrafficLightColor.Black);
         }
 
@@ -177,6 +198,20 @@ namespace TrafficLights.ViewModels
         {
             ToggleColoredButton(TrafficLightColor.Green);
           
+        }
+
+        /// <summary>
+        /// Метод, вызываемый при нажатиии кнопки проверки
+        /// </summary>
+        private void OnCheckPressed()
+        {
+            _model.IsRedLightOn = true;
+            _model.IsYellowLightOn = true;
+            _model.IsGreenLightOn = true;
+
+            ProcessState();
+
+            AddLineToConsole("Зажигаем все лампы");
         }
 
         /// <summary>

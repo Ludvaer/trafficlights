@@ -24,6 +24,6 @@ namespace TrafficLights.Models
         /// <summary>
         /// Зелёный огонь - горит или нет?
         /// </summary>
-        public bool IsGreenLightOn { get; set; }
+        public bool IsGreenLightOn { get; set; } = true;
     }
 }

@@ -32,6 +32,7 @@
 							<Button Content="Красный" Width="200" Command="{ Binding PressRedCommand }"/>
 							<Button Content="Жёлтый" Width="200" Command="{ Binding PressYellowCommand }"/>
 							<Button Content="Зеленый" Width="200" Command="{ Binding PressGreenCommand }"/>
+							<Button Content="Проверка" Width="200" Command="{ Binding PressCheckCommand }"/>
 						</StackPanel>
 					</Border>
 				</Grid>
