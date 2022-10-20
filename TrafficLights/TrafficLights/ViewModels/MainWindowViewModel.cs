@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using TrafficLights.Models;
 
 namespace TrafficLights.ViewModels
 {
@@ -103,14 +104,30 @@ namespace TrafficLights.ViewModels
         /// <param name="color"></param>
         private void  SetColor(TrafficLightColor color)
         {
-            
-            _currentLight = color;
-            RedLightColor = color == TrafficLightColor.Red ? Brushes.Red : Brushes.Black;
-            YellowLightColor = color == TrafficLightColor.Yellow ? Brushes.Yellow : Brushes.Black;
-            GreenLightColor = color == TrafficLightColor.Green ? Brushes.MediumSeaGreen : Brushes.Black;  //[Medium]Turquoise may be fine too
+            RedLightColor = (_model.IsRedLightOn = color == TrafficLightColor.Red) ? Brushes.Red : Brushes.Black;
+            YellowLightColor = (_model.IsYellowLightOn = color == TrafficLightColor.Yellow) ? Brushes.Yellow : Brushes.Black;
+            GreenLightColor = (_model.IsGreenLightOn = color == TrafficLightColor.Green) ? Brushes.MediumSeaGreen : Brushes.Black;  //[Medium]Turquoise may be fine too
 
         }
 
+        /// <summary>
+        /// проверяет ключённость света
+        /// </summary>
+        /// <param name="color"></param>
+        private bool IsLightOn(TrafficLightColor color)
+        {
+            switch (color)
+            {
+                case TrafficLightColor.Red:
+                    return _model.IsRedLightOn;
+                case TrafficLightColor.Yellow:
+                    return _model.IsYellowLightOn;
+                case TrafficLightColor.Green:
+                    return _model.IsGreenLightOn;
+                default:
+                    return false;
+            }
+        }
 
         /// <summary>
         /// Общий метод нажатия кнопки.
@@ -118,18 +135,19 @@ namespace TrafficLights.ViewModels
         /// <param name="color"></param>
         private void ToggleColoredButton(TrafficLightColor color)
         {
-            if (_currentLight == color)
+            if (IsLightOn(color))
                 SetColor(TrafficLightColor.Black);
             else
                 SetColor(color);
         }
 
-        private TrafficLightColor _currentLight;
+        private TrafficLightsModel _model;
 
 
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(TrafficLightsModel model)
         {
+            _model = model;
             PressRedCommand = ReactiveCommand.Create(OnRedPressed); // Связывание метода с командой
             PressYellowCommand = ReactiveCommand.Create(OnYellowPressed);
             PressGreenCommand = ReactiveCommand.Create(OnGreenPressed);
